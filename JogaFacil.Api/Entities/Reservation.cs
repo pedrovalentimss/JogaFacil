@@ -9,11 +9,11 @@ namespace JogaFacil.Api.Entities
     {
         public int Id { get; set; }
 
-        public virtual Place Place { get; set; }
+        public Place Place { get; set; }
 
-        public virtual Arena Arena { get; set; }
+        public Arena Arena { get; set; }
 
-        public virtual User User { get; set; }
+        public User User { get; set; }
 
         public DateTime CreatedAt { get; set; }
 

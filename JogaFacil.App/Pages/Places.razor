@@ -1,0 +1,42 @@
+﻿@page "/places"
+@inject HttpClient Http
+@using Models
+
+<h1>Quadras</h1>
+
+@if (places == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        @foreach (var place in places)
+        {
+            <div class="col-md-4 col-sm-12">
+                <div class="card">
+                    <img src="..." class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">@place.Name</h5>
+                        <ul>
+                            <li><p class="card-text">@place.Phone</p></li>
+                            <li><p class="card-text">@place.Address.Street</p></li>
+                            <li><p class="card-text">@place.Address.City</p></li>
+                        </ul>
+                        <a href="#" class="btn btn-primary">Reservar</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+}
+
+@code {
+    Place[] places;
+
+    protected override async Task OnInitializedAsync()
+    {
+        places = await Http.GetJsonAsync<Place[]>("https://localhost:44360/api/places");
+    }
+}

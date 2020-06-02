@@ -1,11 +1,9 @@
-﻿using JogaFacil.Api.Data;
-using JogaFacil.Api.Util;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace JogaFacil.Api.Entities
+namespace JogaFacil.App.Models
 {
     public class Place
     {
@@ -21,10 +19,10 @@ namespace JogaFacil.Api.Entities
 
         public OpenHours OpenHours { get; set; }
 
-        public List<Arena> Arenas { get; set; }
+        public virtual List<Arena> Arenas { get; set; }
 
-        public User Owner { get; set; }
+        public virtual User Owner { get; set; }
 
-        public List<User> Admins { get; set; }
+        public virtual List<User> Admins { get; set; }
     }
 }

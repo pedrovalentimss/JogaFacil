@@ -24,7 +24,13 @@ namespace JogaFacil.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Place>>> GetAllPlaces()
         {
-            return await _context.Places.ToListAsync();
+            return await _context.Places
+                .Include(p => p.Address)
+                .Include(p => p.OpenHours)
+                .Include(p => p.Arenas)
+                .Include(p => p.Owner)
+                .Include(p => p.Admins)
+                .ToListAsync();
         }
 
         [HttpGet("{id}")]
@@ -39,19 +45,6 @@ namespace JogaFacil.Api.Controllers
 
             return place;
         }
-
-        //[HttpGet]
-        //public ActionResult<Place> GetPlace(string city)
-        //{
-        //    var place = _context.Places.Where(p => p.Address.City.Equals(city));
-
-        //    if (place == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return Ok(place);
-        //}
 
         [HttpPut("{id}")]
         public async Task<IActionResult> PutPlace(int id, Place place)
