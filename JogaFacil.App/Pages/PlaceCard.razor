@@ -1,0 +1,19 @@
+﻿@using Models
+
+<div class="card">
+    <img src="..." class="card-img-top" alt="...">
+    <div class="card-body">
+        <h5 class="card-title">@Place.Name</h5>
+        <ul>
+            <li><p class="card-text">@Place.Phone</p></li>
+            <li><p class="card-text">@Place.Address.Street</p></li>
+            <li><p class="card-text">@Place.Address.City</p></li>
+        </ul>
+        <a href="/places/@Place.Id" class="btn btn-primary">Reservar</a>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Place Place { get; set; }
+}
