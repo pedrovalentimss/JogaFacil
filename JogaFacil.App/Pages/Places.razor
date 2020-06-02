@@ -1,6 +1,6 @@
 ﻿@page "/places"
-@inject HttpClient Http
-@using Models
+@inject HttpClient http
+@using JogaFacil.App.Models
 
 <h1>Quadras</h1>
 
@@ -23,7 +23,7 @@ else
                             <li><p class="card-text">@place.Address.Street</p></li>
                             <li><p class="card-text">@place.Address.City</p></li>
                         </ul>
-                        <a href="#" class="btn btn-primary">Reservar</a>
+                        <a href="/places/@place.Id" class="btn btn-primary">Reservar</a>
                     </div>
                 </div>
             </div>
@@ -37,6 +37,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        places = await Http.GetJsonAsync<Place[]>("https://localhost:44360/api/places");
+        places = await http.GetJsonAsync<Place[]>("https://localhost:44360/api/places");
     }
 }

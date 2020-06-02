@@ -1,0 +1,24 @@
+﻿@page "/places/{Id:int}"
+@inject HttpClient http
+@using JogaFacil.App.Models
+
+@if (place == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <h1>@place.Name</h1>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    Place place;
+
+    protected override async Task OnInitializedAsync()
+    {
+        place = await http.GetJsonAsync<Place>("https://localhost:44360/api/places/" + Id);
+    }
+}

@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29613.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JogaFacil.Api", "JogaFacil.Api\JogaFacil.Api.csproj", "{EC3A1448-941E-4131-9011-04F6DDC0FBA2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JogaFacil.App", "JogaFacil.App\JogaFacil.App.csproj", "{4A2621E9-6A73-4F1A-83DA-162A3C95FDDC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JogaFacil.App", "JogaFacil.App\JogaFacil.App.csproj", "{4A2621E9-6A73-4F1A-83DA-162A3C95FDDC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

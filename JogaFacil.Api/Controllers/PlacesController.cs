@@ -36,7 +36,13 @@ namespace JogaFacil.Api.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Place>> GetPlace(int id)
         {
-            var place = await _context.Places.FindAsync(id);
+            var place = await _context.Places
+                .Include(p => p.Address)
+                .Include(p => p.OpenHours)
+                .Include(p => p.Arenas)
+                .Include(p => p.Owner)
+                .Include(p => p.Admins)
+                .SingleAsync(p => p.Id == id);
 
             if (place == null)
             {
