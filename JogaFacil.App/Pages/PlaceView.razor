@@ -8,7 +8,30 @@
 }
 else
 {
-    <h1>@place.Name</h1>
+    <h2>@place.Name</h2>
+
+    <h5>Telefone</h5>
+    <ul class="list-group">
+        <li class="list-group-item">
+            @place.Phone
+        </li>
+    </ul>
+    <br/>
+    <h5>Endereço</h5>
+    <ul class="list-group">
+        <li class="list-group-item">
+            <a class="font-weight-bold">Rua: </a>@place.Address.Street
+        </li>
+        <li class="list-group-item">
+            <a class="font-weight-bold">Nº: </a>@place.Address.Number
+        </li>
+        <li class="list-group-item">
+            <a class="font-weight-bold">Bairro: </a>@place.Address.Neighbourhood
+        </li>
+        <li class="list-group-item">
+            <a class="font-weight-bold">Cidade: </a>@place.Address.City
+        </li>
+    </ul>
 }
 
 @code {
