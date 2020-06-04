@@ -1,6 +1,7 @@
 ﻿@page "/places/{Id:int}"
-@inject HttpClient http
-@using JogaFacil.App.Models
+@inject IPlacesService placesService;
+@using Models
+@using Services
 
 @if (place == null)
 {
@@ -16,7 +17,7 @@ else
             @place.Phone
         </li>
     </ul>
-    <br/>
+    <br />
     <h5>Endereço</h5>
     <ul class="list-group">
         <li class="list-group-item">
@@ -42,6 +43,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        place = await http.GetJsonAsync<Place>("https://localhost:44360/api/places/" + Id);
+        place = await placesService.GetPlace(Id);
     }
 }

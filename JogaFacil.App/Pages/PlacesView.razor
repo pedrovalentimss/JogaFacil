@@ -1,6 +1,7 @@
 ﻿@page "/places"
-@inject HttpClient http
+@inject IPlacesService placesService;
 @using Models
+@using Services
 
 <h1>Quadras</h1>
 
@@ -26,6 +27,6 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        places = await http.GetJsonAsync<Place[]>("https://localhost:44360/api/places");
+        places = await placesService.GetAllPlaces();
     }
 }
