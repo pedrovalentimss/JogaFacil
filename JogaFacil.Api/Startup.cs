@@ -34,7 +34,9 @@ namespace JogaFacil.Api
 
             services.AddCors(c =>
             {
-                c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin());
+                c.AddPolicy("AllowAll", options => options.AllowAnyOrigin()
+                                                            .AllowAnyMethod()
+                                                            .AllowAnyHeader());
             });
         }
 
@@ -52,7 +54,7 @@ namespace JogaFacil.Api
 
             app.UseAuthorization();
 
-            app.UseCors(options => options.AllowAnyOrigin());
+            app.UseCors("AllowAll");
 
             app.UseEndpoints(endpoints =>
             {
