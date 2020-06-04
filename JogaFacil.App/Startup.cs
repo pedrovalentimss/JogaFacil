@@ -9,6 +9,7 @@ namespace JogaFacil.App
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IPlacesService, PlacesService>();
+            services.AddSingleton<IReservationService, ReservationService>();
         }
 
         public void Configure(IComponentsApplicationBuilder app)

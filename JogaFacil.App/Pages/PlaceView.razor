@@ -1,5 +1,6 @@
 ﻿@page "/places/{Id:int}"
-@inject IPlacesService placesService;
+@inject IPlacesService placesService
+@inject IReservationService reservationService
 @using Models
 @using Services
 
@@ -33,16 +34,34 @@ else
             <a class="font-weight-bold">Cidade: </a>@place.Address.City
         </li>
     </ul>
+
+    <EditForm Model="@reservation" OnSubmit="@AddReservation">
+        <label>Hora de início: </label>
+        <InputDate TValue="DateTime" @bind-Value="reservation.StartTime"></InputDate>
+        <label>Hora do término: </label>
+        <InputDate TValue="DateTime" @bind-Value="reservation.EndTime"></InputDate>
+        <button type="submit" class="btn btn-primary">Solicitar reserva</button>
+    </EditForm>
 }
 
 @code {
     [Parameter]
     public int Id { get; set; }
 
+    Reservation reservation = new Reservation();
+
     Place place;
 
     protected override async Task OnInitializedAsync()
     {
         place = await placesService.GetPlace(Id);
+    }
+
+    private void AddReservation()
+    {
+        reservation.Place = place;
+        reservation.Status = ReservationStatus.WaitingApprovement;
+        reservationService.AddReservation(reservation);
+        reservation = new Reservation();
     }
 }

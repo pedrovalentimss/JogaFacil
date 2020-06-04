@@ -74,9 +74,6 @@ namespace JogaFacil.Api.Controllers
             return NoContent();
         }
 
-        // POST: api/Reservations
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
         public async Task<ActionResult<Reservation>> PostReservation(Reservation reservation)
         {
