@@ -19,5 +19,7 @@ namespace JogaFacil.Api.Data
         public DbSet<User> Users { get; set; }
 
         public DbSet<Place> Places { get; set; }
+
+        public DbSet<Arena> Arenas { get; set; }
     }
 }

@@ -77,8 +77,17 @@ namespace JogaFacil.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<Reservation>> PostReservation(Reservation reservation)
         {
-            _context.Reservations.Add(reservation);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.Places.Attach(reservation.Place);
+                _context.Reservations.Add(reservation);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
 
             return CreatedAtAction("GetReservation", new { id = reservation.Id }, reservation);
         }

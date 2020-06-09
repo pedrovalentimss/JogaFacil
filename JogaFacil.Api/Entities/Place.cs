@@ -1,5 +1,5 @@
 ﻿using JogaFacil.Api.Data;
-using JogaFacil.Api.Util;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,5 +26,49 @@ namespace JogaFacil.Api.Entities
         public User Owner { get; set; }
 
         public List<User> Admins { get; set; }
+    }
+
+    [Owned]
+    public class Address
+    {
+        public string Street { get; set; }
+
+        public string Number { get; set; }
+
+        public string Neighbourhood { get; set; }
+
+        public string PostalCode { get; set; }
+
+        public string City { get; set; }
+
+        public string State { get; set; }
+
+        public string Country { get; set; }
+    }
+
+    [Owned]
+    public class OpenHours
+    {
+        public OpenHoursDay Monday { get; set; }
+
+        public OpenHoursDay Tuesday { get; set; }
+
+        public OpenHoursDay Wednesday { get; set; }
+
+        public OpenHoursDay Thursday { get; set; }
+
+        public OpenHoursDay Friday { get; set; }
+
+        public OpenHoursDay Saturday { get; set; }
+
+        public OpenHoursDay Sunday { get; set; }
+    }
+
+    [Owned]
+    public class OpenHoursDay
+    {
+        public DateTime OpeningHour { get; set; }
+
+        public DateTime ClosingHour { get; set; }
     }
 }
