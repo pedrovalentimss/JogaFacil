@@ -13,6 +13,8 @@ namespace JogaFacil.Api.Entities
 
         public ArenaType Type { get; set; }
 
+        public string Sport { get; set; }
+
         public string Description { get; set; }
     }
 
