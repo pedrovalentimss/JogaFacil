@@ -11,10 +11,10 @@
 }
 else
 {
-    <div class="row">
+    <div class="row d-flex flex-wrap">
         @foreach (var place in places)
         {
-            <div class="col-md-4 col-sm-12">
+            <div class="col-md-4 col-sm-12 d-flex">
                 <PlaceCard Place=@place />
             </div>
         }

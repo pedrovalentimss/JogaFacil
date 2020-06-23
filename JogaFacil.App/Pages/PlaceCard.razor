@@ -1,14 +1,13 @@
 ﻿@using Models
 
-<div class="card">
-    <img src="..." class="card-img-top" alt="...">
+<div class="card mb-3">
+    <img src="https://ginasiomedianeira.com.br/wp-content/uploads/2018/05/20180524_143450_HDR.jpg" class="card-img-top" alt="...">
     <div class="card-body">
         <h5 class="card-title">@Place.Name</h5>
-        <ul>
-            <li><p class="card-text">@Place.Phone</p></li>
-            <li><p class="card-text">@Place.Address.Street</p></li>
-            <li><p class="card-text">@Place.Address.City</p></li>
-        </ul>
+        <p class="card-text">@Place.Address.Street, @Place.Address.Neighbourhood</p>
+        <p class="card-text"><small class="text-muted">A 3km de distância</small></p>
+    </div>
+    <div class="card-footer border-0 bg-transparent">
         <a href="/places/@Place.Id" class="btn btn-primary">Visualizar</a>
     </div>
 </div>
