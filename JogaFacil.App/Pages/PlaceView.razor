@@ -10,38 +10,58 @@
 }
 else
 {
-    <h2>@place.Name</h2>
+    <div class="row">
+        <h2>@place.Name</h2>
+    </div>
+    <div class="row">
+        <div class="col-md-6 col-sm-12">
+            <h5>Telefone</h5>
+            <ul class="list-group">
+                <li class="list-group-item">
+                    @place.Phone
+                </li>
+            </ul>
+            <br />
+            <h5>Endereço</h5>
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <a class="font-weight-bold">Rua: </a>@place.Address.Street
+                </li>
+                <li class="list-group-item">
+                    <a class="font-weight-bold">Nº: </a>@place.Address.Number
+                </li>
+                <li class="list-group-item">
+                    <a class="font-weight-bold">Bairro: </a>@place.Address.Neighbourhood
+                </li>
+                <li class="list-group-item">
+                    <a class="font-weight-bold">Cidade: </a>@place.Address.City
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-6 col-sm-12">
+            <EditForm Model="@reservation" OnSubmit="@AddReservation">
+                <div class="form-group">
+                    <label>Quadras:</label>
+                    <InputSelect @bind-Value="reservation.Arena" class="form-control">
+                        @foreach (var item in place.Arenas)
+                            {
+                            <option value="@item">@item.Name</option>
+                            }
+                    </InputSelect>
 
-    <h5>Telefone</h5>
-    <ul class="list-group">
-        <li class="list-group-item">
-            @place.Phone
-        </li>
-    </ul>
-    <br />
-    <h5>Endereço</h5>
-    <ul class="list-group">
-        <li class="list-group-item">
-            <a class="font-weight-bold">Rua: </a>@place.Address.Street
-        </li>
-        <li class="list-group-item">
-            <a class="font-weight-bold">Nº: </a>@place.Address.Number
-        </li>
-        <li class="list-group-item">
-            <a class="font-weight-bold">Bairro: </a>@place.Address.Neighbourhood
-        </li>
-        <li class="list-group-item">
-            <a class="font-weight-bold">Cidade: </a>@place.Address.City
-        </li>
-    </ul>
-
-    <EditForm Model="@reservation" OnSubmit="@AddReservation">
-        <label>Hora de início: </label>
-        <InputDate TValue="DateTime" @bind-Value="reservation.StartTime"></InputDate>
-        <label>Hora do término: </label>
-        <InputDate TValue="DateTime" @bind-Value="reservation.EndTime"></InputDate>
-        <button type="submit" class="btn btn-primary">Solicitar reserva</button>
-    </EditForm>
+                </div>
+                <div class="form-group">
+                    <label>Hora de início: </label>
+                    <input type="datetime" @bind-value="reservation.StartTime" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label>Hora do término: </label>
+                    <input type="datetime" @bind-value="reservation.EndTime" class="form-control" />
+                </div>
+                <button type="submit" class="btn btn-primary">Solicitar reserva</button>
+            </EditForm>
+        </div>
+    </div>
 }
 
 @code {

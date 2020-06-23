@@ -9,10 +9,16 @@ namespace JogaFacil.Api.Data
 {
     public class Context : DbContext
     {
+        public Context() : base()
+        {
+        }
+
         public Context (DbContextOptions<Context> options)
             : base(options)
         {
         }
+
+
 
         public DbSet<Reservation> Reservations { get; set; }
 

@@ -10,9 +10,8 @@ a, .btn-link {
 
 .btn-primary {
     color: #fff;
-    background-color: #607D8B;
-    border-color: #607D8B;
-    hover: #455A64;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
 }
 
 app {
