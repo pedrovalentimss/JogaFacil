@@ -1,5 +1,6 @@
 ﻿@page "/places"
 @inject IPlacesService placesService;
+@inject IJSRuntime JSRuntime
 @using Models
 @using Services
 
@@ -11,13 +12,18 @@
 }
 else
 {
-    <div class="row d-flex flex-wrap">
-        @foreach (var place in places)
-        {
-            <div class="col-md-4 col-sm-12 d-flex">
-                <PlaceCard Place=@place />
-            </div>
-        }
+    <div class="row">
+        <div class="col-md-6 col-sm-12">
+            @foreach (var place in places)
+            {
+                <div class="d-flex">
+                    <PlaceCard Place=@place />
+                </div>
+            }
+        </div>
+        <div class="col-md-6 col-sm-12">
+            <Map/>
+        </div>
     </div>
 
 }

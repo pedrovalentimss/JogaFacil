@@ -1,0 +1,15 @@
+﻿@inject IJSRuntime JSRuntime
+
+<div @ref="mapContainer" id="mapContainer" class="w-100 h-50"></div>
+
+@code {
+    ElementReference mapContainer;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("initMap", mapContainer);
+        }
+    }
+}
