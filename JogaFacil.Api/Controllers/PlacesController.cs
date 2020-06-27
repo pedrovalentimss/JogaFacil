@@ -7,6 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using JogaFacil.Api.Data;
 using JogaFacil.Api.Entities;
+using JogaFacil.Api.Services;
+using Microsoft.Extensions.Options;
+using JogaFacil.Api.Clients;
+using System.Net.Http;
 
 namespace JogaFacil.Api.Controllers
 {
@@ -15,10 +19,12 @@ namespace JogaFacil.Api.Controllers
     public class PlacesController : ControllerBase
     {
         private readonly Context _context;
+        private readonly IGeocodingService _geocodingClient;
 
-        public PlacesController(Context context)
+        public PlacesController(Context context, IGeocodingService geocodingClient)
         {
             _context = context;
+            _geocodingClient = geocodingClient;
         }
 
         [HttpGet]
@@ -50,6 +56,23 @@ namespace JogaFacil.Api.Controllers
             }
 
             return place;
+        }
+
+        [HttpGet("coordinates/")]
+        public async Task<ActionResult<Coordinates>> GetCoordinates()
+        {
+            var address = new Address
+            {
+                Street = "1600 Pennsylvania Ave NW",
+                Number = "",
+                Neighbourhood = "",
+                PostalCode = "20500",
+                City = "Washington",
+                State = "DC",
+                Country = ""
+            };
+
+            return await _geocodingClient.GetCoordinatesFromAddress(address);
         }
 
         [HttpPut("{id}")]
