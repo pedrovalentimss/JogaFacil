@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using JogaFacil.Api.Data;
+using JogaFacil.Api.Services;
 
 namespace JogaFacil.Api
 {
@@ -38,6 +39,12 @@ namespace JogaFacil.Api
                                                             .AllowAnyMethod()
                                                             .AllowAnyHeader());
             });
+
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+
+            services.AddHttpClient<IGeocodingService, GeocodingService>();
+
+            //services.AddSingleton<IGeocodingService, GeocodingService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
