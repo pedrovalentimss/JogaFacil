@@ -43,6 +43,7 @@ namespace JogaFacil.Api
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
 
             services.AddHttpClient<IGeocodingService, GeocodingService>();
+            services.AddHttpClient<IFoursquareService, FoursquareService>();
 
             //services.AddSingleton<IGeocodingService, GeocodingService>();
         }

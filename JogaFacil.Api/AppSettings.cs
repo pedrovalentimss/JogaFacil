@@ -9,5 +9,8 @@ namespace JogaFacil.Api
     {
         public string GeocodingApiUrl { get; set; }
         public string GeocodingApiToken { get; set; }
+        public string FoursquareApiUrl { get; set; }
+        public string FoursquareApiId { get; set; }
+        public string FoursquareApiSecret { get; set; }
     }
 }

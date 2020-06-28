@@ -9,7 +9,6 @@ using JogaFacil.Api.Data;
 using JogaFacil.Api.Entities;
 using JogaFacil.Api.Services;
 using Microsoft.Extensions.Options;
-using JogaFacil.Api.Clients;
 using System.Net.Http;
 
 namespace JogaFacil.Api.Controllers
@@ -20,11 +19,15 @@ namespace JogaFacil.Api.Controllers
     {
         private readonly Context _context;
         private readonly IGeocodingService _geocodingClient;
+        private readonly IFoursquareService _foursquareClient;
 
-        public PlacesController(Context context, IGeocodingService geocodingClient)
+        public PlacesController(Context context,
+            IGeocodingService geocodingClient,
+            IFoursquareService foursquareClient)
         {
             _context = context;
             _geocodingClient = geocodingClient;
+            _foursquareClient = foursquareClient;
         }
 
         [HttpGet]
@@ -73,6 +76,14 @@ namespace JogaFacil.Api.Controllers
             };
 
             return await _geocodingClient.GetCoordinatesFromAddress(address);
+        }
+
+        [HttpGet("near/{city}")]
+        public async Task<ActionResult<IEnumerable<Place>>> GetPlacesFromCity(string city)
+        
+        {
+            var places = await _foursquareClient.GetPlacesFromCity(city);
+            return places.ToList();
         }
 
         [HttpPut("{id}")]
