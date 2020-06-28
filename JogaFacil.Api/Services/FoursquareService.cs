@@ -50,8 +50,18 @@ namespace JogaFacil.Api.Services
 
                 foreach (var item in venues)
                 {
+                    var address = new Address
+                    {
+                        Street = item.location.address,
+                        City = item.location.city,
+                        Country = item.location.country,
+                        PostalCode = item.location.postalCode,
+                        State = item.location.state
+                    };
+
                     var place = new Place { 
                         Name = item.name,
+                        Address = address
                     };
 
                     places.Add(place);
