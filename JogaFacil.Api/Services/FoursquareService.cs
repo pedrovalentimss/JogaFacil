@@ -32,6 +32,7 @@ namespace JogaFacil.Api.Services
             query.Add("client_secret", _appSettings.Value.FoursquareApiSecret);
             query.Add("near", city);
             query.Add("query", "quadra de futsal");
+            query.Add("radius", "5000");
             query.Add("v", "20200501");
             //query.Add("categoryId", "4f4528bc4b90abdf24c9de85");
 

@@ -27,6 +27,7 @@ namespace JogaFacil.Api.Services
         public async Task<Coordinates> GetCoordinatesFromAddress(Address address)
         {
             var builder = new UriBuilder(_appSettings.Value.GeocodingApiUrl);
+            builder.Path = "geocoding/v1/address";
             builder.Port = -1;
 
             var query = HttpUtility.ParseQueryString(builder.Query);
@@ -52,6 +53,42 @@ namespace JogaFacil.Api.Services
                 {
                     Latitude = lat,
                     Longitude = lng
+                };
+            }
+
+            return null;
+        }
+
+        public async Task<Address> GetAddressFromCoordinates(Coordinates coordinates)
+        {
+            var builder = new UriBuilder(_appSettings.Value.GeocodingApiUrl);
+            builder.Path = "geocoding/v1/reverse";
+            builder.Port = -1;
+
+            var query = HttpUtility.ParseQueryString(builder.Query);
+            query.Add("key", _appSettings.Value.GeocodingApiToken);
+            query.Add("location", coordinates.Latitude.ToString() + "," + coordinates.Longitude.ToString());
+
+            builder.Query = query.ToString();
+            string url = builder.ToString();
+
+            var response = await _http.GetAsync(url);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var jsonString = await response.Content.ReadAsStringAsync();
+                dynamic data = JObject.Parse(jsonString);
+                var address = data.results[0].locations[0];
+
+                return new Address
+                {
+                    City = address.adminArea5,
+                    Country = address.adminArea1,
+                    State = address.adminArea3,
+                    Street = address.street,
+                    Neighbourhood = address.adminArea6,
+                    Number = "",
+                    PostalCode = address.postalCode
                 };
             }
 

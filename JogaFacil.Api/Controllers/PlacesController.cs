@@ -18,21 +18,39 @@ namespace JogaFacil.Api.Controllers
     public class PlacesController : ControllerBase
     {
         private readonly Context _context;
-        private readonly IGeocodingService _geocodingClient;
-        private readonly IFoursquareService _foursquareClient;
+        private readonly IGeocodingService _geocodingService;
+        private readonly IFoursquareService _foursquareService;
 
         public PlacesController(Context context,
-            IGeocodingService geocodingClient,
-            IFoursquareService foursquareClient)
+            IGeocodingService geocodingService,
+            IFoursquareService foursquareService)
         {
             _context = context;
-            _geocodingClient = geocodingClient;
-            _foursquareClient = foursquareClient;
+            _geocodingService = geocodingService;
+            _foursquareService = foursquareService;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Place>>> GetAllPlaces()
+        public async Task<ActionResult<IEnumerable<Place>>> GetPlaces(string city = null, string sport = null)
         {
+            if (city != null)
+            {
+                var places = GetPlacesFromCity(city); 
+
+                if (places.Result.Any())
+                {
+                    return places.Result.ToList();
+                }
+
+                var placesFromService = GetPlacesFromService(city);
+
+                placesFromService.Result.ToList().ForEach(async p => await PostPlace(p));
+
+                places = GetPlacesFromCity(city);
+
+                return places.Result.ToList();
+            }
+
             return await _context.Places
                 .Include(p => p.Address)
                 .Include(p => p.OpenHours)
@@ -61,29 +79,23 @@ namespace JogaFacil.Api.Controllers
             return place;
         }
 
-        [HttpGet("coordinates/")]
-        public async Task<ActionResult<Coordinates>> GetCoordinates()
-        {
-            var address = new Address
-            {
-                Street = "1600 Pennsylvania Ave NW",
-                Number = "",
-                Neighbourhood = "",
-                PostalCode = "20500",
-                City = "Washington",
-                State = "DC",
-                Country = ""
-            };
-
-            return await _geocodingClient.GetCoordinatesFromAddress(address);
-        }
-
-        [HttpGet("near/{city}")]
-        public async Task<ActionResult<IEnumerable<Place>>> GetPlacesFromCity(string city)
+        public async Task<IEnumerable<Place>> GetPlacesFromService(string city)
         
         {
-            var places = await _foursquareClient.GetPlacesFromCity(city);
+            var places = await _foursquareService.GetPlacesFromCity(city);
             return places.ToList();
+        }
+
+        public async Task<IEnumerable<Place>> GetPlacesFromCity(string city)
+        {
+            return await _context.Places
+                .Include(p => p.Address)
+                .Include(p => p.OpenHours)
+                .Include(p => p.Arenas)
+                .Include(p => p.Owner)
+                .Include(p => p.Admins)
+                .Where(p => p.Address.City.ToLower().Equals(city.ToLower()))
+                .ToListAsync();
         }
 
         [HttpPut("{id}")]
@@ -118,6 +130,13 @@ namespace JogaFacil.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<Place>> PostPlace(Place place)
         {
+            //if (place.Address.Latitude == null || place.Address.Longitude == null)
+            //{
+            //    var coordinates = await _geocodingService.GetCoordinatesFromAddress(place.Address);
+            //    place.Address.Latitude = coordinates.Latitude.ToString();
+            //    place.Address.Longitude = coordinates.Longitude.ToString();
+            //}
+
             _context.Places.Add(place);
             await _context.SaveChangesAsync();
 
