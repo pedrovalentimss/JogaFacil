@@ -5,8 +5,10 @@
         <div class="col-sm-12">
             <div class="card-body">
                 <h5 class="card-title">@Place.Name</h5>
-                <p class="card-text">@Place.Address.Street, @Place.Address.Neighbourhood</p>
-                <p class="card-text"><small class="text-muted">A 3km de distância</small></p>
+                <p class="card-text">
+                    <i class="fa fa-fw fa-map-marker-alt"></i>
+                    @Place.Address.Street, @Place.Address.Number - @Place.Address.City
+                </p>
                 <a href="/places/@Place.Id" class="btn btn-primary">Visualizar</a>
             </div>
         </div>
