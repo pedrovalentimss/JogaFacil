@@ -31,30 +31,28 @@ else
                 }
             </div>
 
-            <div class="@FormCssClass">
-                <EditForm Model="@reservation" OnSubmit="@AddReservation">
-                    <div class="form-group">
-                        <label>Quadras:</label>
-                        <select class="form-control custom-select" @bind="arenaId">
-                            @foreach (var item in place.Arenas)
-                            {
-                                <option value="@item.Id.ToString()">@item.Name</option>
-                            }
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Data da reserva: </label>
-                        <input type="date" class="form-control" @bind="reservationDate" />
-                    </div>
-                    <div class="form-group">
-                        <label>Hora da reserva: </label>
-                        <input type="time" class="form-control" @bind="reservationTime" />
-                    </div>
-                    <div class="fixed-bottom p-3 bg-white">
-                        <button type="submit" class="btn btn-primary btn-block btn-lg">Reservar</button>
-                    </div>
-                </EditForm>
-            </div>
+            <EditForm Model="@reservation" OnSubmit="@AddReservation">
+                <div class="form-group">
+                    <label>Quadras:</label>
+                    <select class="form-control custom-select" @bind="arenaId">
+                        @foreach (var item in place.Arenas)
+                        {
+                            <option value="@item.Id.ToString()">@item.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Data da reserva: </label>
+                    <input type="date" class="form-control" @bind="reservationDate" />
+                </div>
+                <div class="form-group">
+                    <label>Hora da reserva: </label>
+                    <input type="time" class="form-control" @bind="reservationTime" />
+                </div>
+                <div class="fixed-bottom p-3 bg-white">
+                    <button type="submit" class="btn btn-primary btn-block btn-lg">Reservar</button>
+                </div>
+            </EditForm>
         </div>
     </div>
 }
@@ -72,15 +70,6 @@ else
     private DateTime reservationDate;
 
     Place place;
-
-    private bool collapseDivForm = true;
-
-    private string FormCssClass => collapseDivForm ? "collapse" : null;
-
-    private void ToggleDivForm()
-    {
-        collapseDivForm = !collapseDivForm;
-    }
 
     protected override async Task OnInitializedAsync()
     {
