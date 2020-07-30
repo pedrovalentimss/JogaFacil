@@ -11,7 +11,7 @@ namespace JogaFacil.Api.Entities
 
         public Place Place { get; set; }
 
-        public Arena Arena { get; set; }
+        public int ArenaId { get; set; }
 
         public User User { get; set; }
 
