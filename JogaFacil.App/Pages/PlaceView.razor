@@ -1,6 +1,7 @@
 ﻿@page "/places/{Id:int}"
 @inject IPlacesService placesService
 @inject IReservationService reservationService
+@inject IArenasService arenasService
 @using Models
 @using Services
 
@@ -11,55 +12,49 @@
 else
 {
     <div class="row">
-        <h2>@place.Name</h2>
-    </div>
-    <div class="row">
-        <div class="col-md-6 col-sm-12">
-            <h5>Telefone</h5>
-            <ul class="list-group">
-                <li class="list-group-item">
-                    @place.Phone
-                </li>
-            </ul>
-            <br />
-            <h5>Endereço</h5>
-            <ul class="list-group">
-                <li class="list-group-item">
-                    <a class="font-weight-bold">Rua: </a>@place.Address.Street
-                </li>
-                <li class="list-group-item">
-                    <a class="font-weight-bold">Nº: </a>@place.Address.Number
-                </li>
-                <li class="list-group-item">
-                    <a class="font-weight-bold">Bairro: </a>@place.Address.Neighbourhood
-                </li>
-                <li class="list-group-item">
-                    <a class="font-weight-bold">Cidade: </a>@place.Address.City
-                </li>
-            </ul>
+        <div class="col-sm-12">
+            <h3>@place.Name</h3>
+            <p>
+                <i class="fa fa-fw fa-map-marker-alt"></i>
+                @place.Address.Street, @place.Address.Number - @place.Address.City
+            </p>
+            <p>
+                <i class="fa fa-fw fa-phone-alt"></i>
+                @place.Phone
+            </p>
         </div>
-        <div class="col-md-6 col-sm-12">
-            <EditForm Model="@reservation" OnSubmit="@AddReservation">
-                <div class="form-group">
-                    <label>Quadras:</label>
-                    <InputSelect @bind-Value="reservation.Arena" class="form-control">
-                        @foreach (var item in place.Arenas)
-                            {
-                            <option value="@item">@item.Name</option>
-                            }
-                    </InputSelect>
+        <div class="col-sm-12">
+            <div class="row row-cols-sm-2">
+                @foreach (var arena in place.Arenas)
+                {
+                    <ArenaCard Arena=@arena />
+                }
+            </div>
 
-                </div>
-                <div class="form-group">
-                    <label>Hora de início: </label>
-                    <input type="datetime" @bind-value="reservation.StartTime" class="form-control" />
-                </div>
-                <div class="form-group">
-                    <label>Hora do término: </label>
-                    <input type="datetime" @bind-value="reservation.EndTime" class="form-control" />
-                </div>
-                <button type="submit" class="btn btn-primary">Solicitar reserva</button>
-            </EditForm>
+            <div class="@FormCssClass">
+                <EditForm Model="@reservation" OnSubmit="@AddReservation">
+                    <div class="form-group">
+                        <label>Quadras:</label>
+                        <select class="form-control custom-select" @bind="arenaId">
+                            @foreach (var item in place.Arenas)
+                            {
+                                <option value="@item.Id.ToString()">@item.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Data da reserva: </label>
+                        <input type="date" class="form-control" @bind="reservationDate" />
+                    </div>
+                    <div class="form-group">
+                        <label>Hora da reserva: </label>
+                        <input type="time" class="form-control" @bind="reservationTime" />
+                    </div>
+                    <div class="fixed-bottom p-3 bg-white">
+                        <button type="submit" class="btn btn-primary btn-block btn-lg">Reservar</button>
+                    </div>
+                </EditForm>
+            </div>
         </div>
     </div>
 }
@@ -70,7 +65,22 @@ else
 
     Reservation reservation = new Reservation();
 
+    private string arenaId;
+
+    private DateTime reservationTime;
+
+    private DateTime reservationDate;
+
     Place place;
+
+    private bool collapseDivForm = true;
+
+    private string FormCssClass => collapseDivForm ? "collapse" : null;
+
+    private void ToggleDivForm()
+    {
+        collapseDivForm = !collapseDivForm;
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -79,7 +89,11 @@ else
 
     private void AddReservation()
     {
+        reservation.CreatedAt = DateTime.Now;
+        reservation.StartTime = reservationDate.Add(reservationTime.TimeOfDay);
+        reservation.EndTime = reservation.StartTime.AddHours(1);
         reservation.Place = place;
+        reservation.ArenaId = Convert.ToInt32(arenaId);
         reservation.Status = ReservationStatus.WaitingApprovement;
         reservationService.AddReservation(reservation);
         reservation = new Reservation();

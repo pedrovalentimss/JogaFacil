@@ -11,7 +11,7 @@ namespace JogaFacil.App.Models
 
         public Place Place { get; set; }
 
-        public Arena Arena { get; set; }
+        public int ArenaId { get; set; }
 
         public User User { get; set; }
 
