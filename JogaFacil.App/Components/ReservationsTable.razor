@@ -1,0 +1,46 @@
+﻿@inject IReservationService reservationService;
+@using Models
+@using Services
+
+<h6>Solicitações de reserva para aprovação</h6>
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Nome do usuário</th>
+                <th scope="col">Data da reserva</th>
+                <th scope="col">Horário de início</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var reservation in Reservations)
+            {
+                <tr>
+                    <td>Joao Silva</td>
+                    <td>@reservation.StartTime.ToShortDateString()</td>
+                    <td>@reservation.StartTime.ToShortTimeString()</td>
+                    <td>
+                        <button class="btn btn-sm btn-success" @onclick="(() => ChangeReservationStatus(reservation, ReservationStatus.Approved))">Aprovar reserva</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    [Parameter]
+    public Reservation[] Reservations { get; set; }
+
+    private void ChangeReservationStatus(Reservation reservation, ReservationStatus status)
+    {
+        reservation.Status = status;
+        EditReservation(reservation);
+    }
+
+    private void EditReservation(Reservation reservation)
+    {
+        reservationService.EditReservation(reservation);
+    }
+}

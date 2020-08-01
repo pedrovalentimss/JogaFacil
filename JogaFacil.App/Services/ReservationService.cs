@@ -23,5 +23,17 @@ namespace JogaFacil.App.Services
             var route = API_URL + "/reservations";
             _http.PostJsonAsync(route, reservation);
         }
+
+        public void EditReservation(Reservation reservation)
+        {
+            var route = API_URL + "/reservations/" + reservation.Id;
+            _http.PutJsonAsync(route, reservation);
+        }
+
+        public async Task<Reservation[]> GetAllReservations()
+        {
+            var route = API_URL + "/reservations";
+            return await _http.GetJsonAsync<Reservation[]>(route);
+        }
     }
 }

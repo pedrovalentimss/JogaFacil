@@ -23,9 +23,21 @@ namespace JogaFacil.Api.Controllers
 
         // GET: api/Reservations
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Reservation>>> GetReservation()
+        public async Task<ActionResult<IEnumerable<Reservation>>> GetReservations(int ownerId = 0)
         {
-            return await _context.Reservations.ToListAsync();
+            if (ownerId != 0)
+            {
+                return await _context.Reservations
+                .Include(r => r.Place)
+                .Include(r => r.User)
+                .Where(r => r.Place.Owner.Id == ownerId)
+                .ToListAsync();
+            }
+
+            return await _context.Reservations
+                .Include(r => r.Place)
+                .Include(r => r.User)
+                .ToListAsync();
         }
 
         // GET: api/Reservations/5

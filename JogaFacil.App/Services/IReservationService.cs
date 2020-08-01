@@ -9,5 +9,9 @@ namespace JogaFacil.App.Services
     public interface IReservationService
     {
         void AddReservation(Reservation reservation);
+
+        void EditReservation(Reservation reservation);
+
+        Task<Reservation[]> GetAllReservations();
     }
 }
