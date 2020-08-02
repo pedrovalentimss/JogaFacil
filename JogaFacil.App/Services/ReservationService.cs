@@ -5,13 +5,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace JogaFacil.App.Services
 {
     public class ReservationService : IReservationService
     {
         private readonly HttpClient _http;
-        private const string API_URL = "https://localhost:44360/api";
+        private const string API_URL = "https://localhost:44360/";
 
         public ReservationService(HttpClient http)
         {
@@ -20,19 +21,41 @@ namespace JogaFacil.App.Services
 
         public void AddReservation(Reservation reservation)
         {
-            var route = API_URL + "/reservations";
+            var builder = new UriBuilder(API_URL);
+            builder.Path = "api/reservations";
+
+            var route = builder.ToString();
             _http.PostJsonAsync(route, reservation);
         }
 
         public void EditReservation(Reservation reservation)
         {
-            var route = API_URL + "/reservations/" + reservation.Id;
+            var builder = new UriBuilder(API_URL);
+            builder.Path = "api/reservations/" + reservation.Id;
+
+            var route = builder.ToString();
             _http.PutJsonAsync(route, reservation);
         }
 
         public async Task<Reservation[]> GetAllReservations()
         {
-            var route = API_URL + "/reservations";
+            var builder = new UriBuilder(API_URL);
+            builder.Path = "api/reservations";
+
+            var route = builder.ToString();
+            return await _http.GetJsonAsync<Reservation[]>(route);
+        }
+        
+        public async Task<Reservation[]> GetReservationsByStatus(int status)
+        {
+            var builder = new UriBuilder(API_URL);
+            builder.Path = "api/reservations";
+
+            var query = HttpUtility.ParseQueryString(builder.Query);
+            query.Add("status", status.ToString());
+
+            builder.Query = query.ToString();
+            var route = builder.ToString();
             return await _http.GetJsonAsync<Reservation[]>(route);
         }
     }

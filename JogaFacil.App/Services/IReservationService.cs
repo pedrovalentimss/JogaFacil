@@ -13,5 +13,7 @@ namespace JogaFacil.App.Services
         void EditReservation(Reservation reservation);
 
         Task<Reservation[]> GetAllReservations();
+
+        Task<Reservation[]> GetReservationsByStatus(int status);
     }
 }

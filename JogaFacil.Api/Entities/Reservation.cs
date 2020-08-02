@@ -26,9 +26,9 @@ namespace JogaFacil.Api.Entities
 
     public enum ReservationStatus
     {
-        WaitingApprovement = 0,
-        Approved = 1,
-        Denied = 2,
-        Canceled = 3
+        WaitingApprovement = 1,
+        Approved = 2,
+        Denied = 3,
+        Canceled = 4
     }
 }

@@ -1,31 +1,15 @@
 ﻿@page "/reservations"
-@inject IReservationService reservationService;
-@inject IJSRuntime JSRuntime
 @using Models
 @using Services
 
 <h2>Reservas</h2>
 
-@if (reservations == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <h5>Solicitações de reserva</h5>
-    <div class="row">
-        <div class="col-sm-12">
-            <ReservationsTable Reservations="reservations"/>
-        </div>
+<div class="row">
+    <div class="col-sm-12">
+        <ReservationsTable />
     </div>
-
-}
+</div>
 
 @code {
-    Reservation[] reservations;
 
-    protected override async Task OnInitializedAsync()
-    {
-        reservations = await reservationService.GetAllReservations();
-    }
 }

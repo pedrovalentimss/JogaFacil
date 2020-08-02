@@ -7,9 +7,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using JogaFacil.Api.Data;
 using JogaFacil.Api.Entities;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 
 namespace JogaFacil.Api.Controllers
 {
+    [EnableCors("AllowAll")]
     [Route("api/[controller]")]
     [ApiController]
     public class ReservationsController : ControllerBase
@@ -23,23 +26,55 @@ namespace JogaFacil.Api.Controllers
 
         // GET: api/Reservations
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Reservation>>> GetReservations(int ownerId = 0)
+        public async Task<ActionResult<IEnumerable<Reservation>>> GetReservations(int placeId = 0, int status = 0)
         {
-            if (ownerId != 0)
-            {
-                return await _context.Reservations
-                .Include(r => r.Place)
-                .Include(r => r.User)
-                .Where(r => r.Place.Owner.Id == ownerId)
-                .ToListAsync();
-            }
+            if (placeId != 0 && status == 0)
+                return GetReservationsFromPlace(placeId).Result;
+
+            if (placeId == 0 && status != 0)
+                return GetReservationsByStatus(status).Result;
+
+            if (placeId != 0 && status != 0)
+                return GetReservationsFromPlaceByStatus(status, placeId).Result;
 
             return await _context.Reservations
                 .Include(r => r.Place)
+                .Include(r => r.Place.Arenas)
                 .Include(r => r.User)
                 .ToListAsync();
         }
 
+        public async Task<ActionResult<IEnumerable<Reservation>>> GetReservationsFromPlace(int placeId)
+        {
+            return await _context.Reservations
+            .Include(r => r.Place)
+            .Include(r => r.Place.Arenas)
+            .Include(r => r.User)
+            .Where(r => r.Place.Id == placeId)
+            .ToListAsync();
+        }
+
+        public async Task<ActionResult<IEnumerable<Reservation>>> GetReservationsByStatus(int status)
+        {
+            return await _context.Reservations
+            .Include(r => r.Place)
+            .Include(r => r.Place.Arenas)
+            .Include(r => r.User)
+            .Where(r => r.Status == (ReservationStatus)status)
+            .ToListAsync();
+        }
+
+        public async Task<ActionResult<IEnumerable<Reservation>>> GetReservationsFromPlaceByStatus(int status, int placeId)
+        {
+            return await _context.Reservations
+            .Include(r => r.Place)
+            .Include(r => r.Place.Arenas)
+            .Include(r => r.User)
+            .Where(r => r.Place.Id == placeId)
+            .Where(r => r.Status == (ReservationStatus)status)
+            .ToListAsync();
+        }
+        
         // GET: api/Reservations/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Reservation>> GetReservation(int id)
