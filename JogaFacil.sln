@@ -7,6 +7,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JogaFacil.Api", "JogaFacil.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JogaFacil.App", "JogaFacil.App\JogaFacil.App.csproj", "{4A2621E9-6A73-4F1A-83DA-162A3C95FDDC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JogaFacil.Server", "JogaFacil\Server\JogaFacil.Server.csproj", "{E948FEFB-0FA0-4A23-BB7E-519B56E099E9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JogaFacil.Client", "JogaFacil\Client\JogaFacil.Client.csproj", "{69446A97-AA95-4471-ACE8-3AD07582A6A7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JogaFacil.Shared", "JogaFacil\Shared\JogaFacil.Shared.csproj", "{CDC4C543-F4E4-4246-8B97-871E52CD1E2B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +27,18 @@ Global
 		{4A2621E9-6A73-4F1A-83DA-162A3C95FDDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4A2621E9-6A73-4F1A-83DA-162A3C95FDDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4A2621E9-6A73-4F1A-83DA-162A3C95FDDC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E948FEFB-0FA0-4A23-BB7E-519B56E099E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E948FEFB-0FA0-4A23-BB7E-519B56E099E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E948FEFB-0FA0-4A23-BB7E-519B56E099E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E948FEFB-0FA0-4A23-BB7E-519B56E099E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69446A97-AA95-4471-ACE8-3AD07582A6A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69446A97-AA95-4471-ACE8-3AD07582A6A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69446A97-AA95-4471-ACE8-3AD07582A6A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69446A97-AA95-4471-ACE8-3AD07582A6A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CDC4C543-F4E4-4246-8B97-871E52CD1E2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDC4C543-F4E4-4246-8B97-871E52CD1E2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDC4C543-F4E4-4246-8B97-871E52CD1E2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDC4C543-F4E4-4246-8B97-871E52CD1E2B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,28 @@
+﻿@using Models
+
+<div class="col-6 mb-3">
+    <div class="card @BorderPrimaryClass"  @onclick="SelectCard">
+        <div class="card-body">
+            <h5 class="card-title">@Arena.Name</h5>
+            <p class="card-text">
+                <i class="fa fa-fw fa-map-marker-alt"></i>
+                @Arena.Sport | @Arena.Type
+            </p>
+            <p class="card-text"><small class="text-muted">@Arena.Description</small></p>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Arena Arena { get; set; }
+
+    private bool selectCard = false;
+
+    private string BorderPrimaryClass => selectCard ? "border-primary" : null;
+
+    private void SelectCard()
+    {
+        selectCard = !selectCard;
+    }
+}
