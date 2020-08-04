@@ -15,11 +15,11 @@ else
         <div class="col-sm-12">
             <h3>@place.Name</h3>
             <p>
-                <i class="fa fa-fw fa-map-marker-alt"></i>
+                <MatIcon Icon="place"></MatIcon>
                 @place.Address.Street, @place.Address.Number - @place.Address.City
             </p>
             <p>
-                <i class="fa fa-fw fa-phone-alt"></i>
+                <MatIcon Icon="phone"></MatIcon>
                 @place.Phone
             </p>
         </div>
@@ -36,13 +36,12 @@ else
                 <ValidationSummary />
                 <div class="form-group">
                     <label>Quadras:</label>
-                    <select required class="form-control custom-select" @bind="reservationFormModel.ArenaId">
-                        <option value="" disabled selected hidden>Selecione uma quadra...</option>
+                    <MatSelect Label="Selecione uma quadra" @bind-Value="reservationFormModel.ArenaId">
                         @foreach (var item in place.Arenas)
-                        {
-                            <option value="@item.Id.ToString()">@item.Name</option>
-                        }
-                    </select>
+                            {
+                            <MatOptionString Value="@item.Id.ToString()">@item.Name</MatOptionString>
+                            }
+                    </MatSelect>
 
                 </div>
                 <div class="form-group">
