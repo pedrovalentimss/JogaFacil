@@ -9,7 +9,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Client\JogaFacil.Client.csproj" />
     <ProjectReference Include="..\Shared\JogaFacil.Shared.csproj" />
   </ItemGroup>
 
