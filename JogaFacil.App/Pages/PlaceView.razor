@@ -31,32 +31,54 @@ else
                 }
             </div>
 
-            <EditForm Model="@reservationFormModel" OnValidSubmit="@SaveReservation">
-                <DataAnnotationsValidator />
-                <ValidationSummary />
-                <div class="form-group">
-                    <label>Quadras:</label>
-                    <select required class="form-control custom-select" @bind="reservationFormModel.ArenaId">
-                        <option value="" disabled selected hidden>Selecione uma quadra...</option>
-                        @foreach (var item in place.Arenas)
-                        {
-                            <option value="@item.Id.ToString()">@item.Name</option>
-                        }
-                    </select>
+            <div class="modal fade" id="modalForm" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
+                <EditForm Model="@reservationFormModel" OnValidSubmit="@SaveReservation">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalTitle">Solicitar reserva</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
 
-                </div>
-                <div class="form-group">
-                    <label>Data da reserva: </label>
-                    <input type="date" class="form-control" min="@DateTime.Now" @bind="reservationFormModel.Date"/>
-                </div>
-                <div class="form-group">
-                    <label>Hora da reserva: </label>
-                    <input type="time" class="form-control" @bind="reservationFormModel.Time" />
-                </div>
-                <div class="fixed-bottom p-3 bg-white">
-                    <input type="submit" class="btn btn-primary btn-block btn-lg" value="Reservar"/>
-                </div>
-            </EditForm>
+                                <DataAnnotationsValidator />
+                                <ValidationSummary />
+                                <div class="form-group">
+                                    <label>Quadras:</label>
+                                    <select required class="form-control custom-select" @bind="reservationFormModel.ArenaId">
+                                        <option value="" disabled selected hidden>Selecione uma quadra...</option>
+                                        @foreach (var item in place.Arenas)
+                                        {
+                                            <option value="@item.Id.ToString()">@item.Name</option>
+                                        }
+                                    </select>
+
+                                </div>
+                                <div class="form-group">
+                                    <label>Data da reserva: </label>
+                                    <input type="date" class="form-control" min="@DateTime.Now" @bind="reservationFormModel.Date" />
+                                </div>
+                                <div class="form-group">
+                                    <label>Hora da reserva: </label>
+                                    <input type="time" class="form-control" @bind="reservationFormModel.Time" />
+                                </div>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                <input type="submit" class="btn btn-primary" value="Solicitar" />
+                            </div>
+                        </div>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+        <div class="fixed-bottom p-3 bg-white">
+            <button type="button" class="btn btn-primary btn-block btn-lg" data-toggle="modal" data-target="#modalForm">
+                Reservar
+            </button>
         </div>
     </div>
 }
