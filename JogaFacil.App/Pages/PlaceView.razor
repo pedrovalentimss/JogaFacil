@@ -2,6 +2,7 @@
 @inject IPlacesService placesService
 @inject IReservationService reservationService
 @inject IArenasService arenasService
+@inject IJSRuntime JSRuntime;
 @using Models
 @using Services
 
@@ -67,8 +68,17 @@ else
 
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                <input type="submit" class="btn btn-primary" value="Solicitar" />
+                                <div class="d-flex flex-column flex-grow-1 justify-content-end">
+                                    <div class="alert alert-success collapse" id="alertSuccess" role="alert">
+                                        Reserva solicitada com sucesso!
+                                        <br/>
+                                        <a href="reservations" class="alert-link">Acompanhe suas reservas aqui</a>.
+                                    </div>
+                                    <div class="align-self-end">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                        <input type="submit" class="btn btn-primary" value="Solicitar" />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -98,7 +108,7 @@ else
         place = await placesService.GetPlace(Id);
     }
 
-    private void SaveReservation()
+    async Task SaveReservation()
     {
         var reservation = new Reservation();
         reservation.CreatedAt = DateTime.Now;
@@ -110,5 +120,11 @@ else
         reservationService.AddReservation(reservation);
         reservationFormModel = new ReservationFormModel();
         reservationFormModel.Date = DateTime.Now;
+        await ShowAlert("#alertSuccess", 8000);
+    }
+
+    async Task ShowAlert(string elementId, int timeToShow)
+    {
+        await JSRuntime.InvokeVoidAsync("showAlert", elementId, timeToShow);
     }
 }
