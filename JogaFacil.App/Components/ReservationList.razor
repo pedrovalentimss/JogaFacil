@@ -1,0 +1,40 @@
+﻿@using Models
+
+@if (SelectedDay.Reservations != null)
+{
+    @foreach (var reservation in SelectedDay.Reservations)
+    {
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="row no-gutters">
+                    <div class="col-8">
+                        <h5 class="card-title">Marcos Souza</h5>
+                        <p class="text-muted mb-0">
+                            @GetArenaNameFromId(reservation)
+                        </p>
+                        <p class="card-text">
+                            <i class="fa fa-fw fa-calendar-alt"></i>
+                            @reservation.StartTime.ToShortDateString() -
+                            <i class="fa fa-fw fa-clock"></i>
+                            @reservation.StartTime.ToShortTimeString()
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+} else
+{
+    <p>Nenhuma reserva</p>
+}
+
+@code {
+    [Parameter]
+    public CalendarDay SelectedDay { get; set; }
+
+    private string GetArenaNameFromId(Reservation reservation)
+    {
+        var arena = reservation.Place.Arenas.Single(a => a.Id == reservation.ArenaId);
+        return arena.Name;
+    }
+}

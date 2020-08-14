@@ -1,0 +1,154 @@
+﻿@using Models
+@using Services
+@inject IReservationService reservationService;
+
+<div class="p-1">
+    <div class="row mb-2">
+        <div class="col-auto">
+            <select class="custom-select" value="@year" @onchange="SelectYear">
+                @for (int i = 2019; i < 2022; i++)
+                {
+                    <option>@i</option>
+                }
+            </select>
+        </div>
+        <div class="col-auto">
+            <select class="custom-select" value="@month" @onchange="SelectMonth">
+                @for (int i = 0; i < monthNames.Length; i++)
+                {
+                    <option value="@(i + 1)">@monthNames[i].ToString()</option>
+                }
+            </select>
+        </div>
+    </div>
+    <table class="table table-borderless table-sm w-100 text-center">
+        <thead>
+            <tr>
+                @foreach (var day in dayNames)
+                {
+                    <th scope="col">@day.ToString().ToUpper()</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @for (int r = 0; r < rowsCount; r++)
+            {
+                <tr>
+                    @foreach (var day in days.Skip(r * 7).Take(7))
+                    {
+                        <td>@DayTemplate(day)</td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    [Parameter]
+    public RenderFragment<CalendarDay> DayTemplate { get; set; }
+
+    [Parameter]
+    public Reservation[] Reservations { get; set; }
+
+    private int year = DateTime.Now.Year;
+
+    private int month = DateTime.Now.Month;
+
+    private List<CalendarDay> days = new List<CalendarDay>();
+
+    private int rowsCount = 0;
+
+    string[] monthNames = CultureInfo.GetCultureInfo("pt-BR").DateTimeFormat.MonthNames;
+
+    string[] dayNames = CultureInfo.GetCultureInfo("pt-BR").DateTimeFormat.ShortestDayNames;
+
+    protected override void OnInitialized()
+    {
+        UpdateCalendar();
+    }
+
+    void AddReservationsToMonth()
+    {
+        var reservationsMonth = Reservations.Where(r => r.StartTime.Month == month && r.StartTime.Year == year);
+        if (reservationsMonth != null)
+        {
+            foreach (var reservation in reservationsMonth)
+            {
+                var day = days.Single(d => d.Date.Day == reservation.StartTime.Day);
+                day.Reservations.Add(reservation);
+            }
+        }
+    }
+
+    void SelectMonth(ChangeEventArgs e)
+    {
+        Console.WriteLine(monthNames.ToString());
+        month = Convert.ToInt32(e.Value.ToString());
+        // Render Calendar
+        UpdateCalendar();
+        Console.WriteLine($"Month: {month}");
+    }
+
+    void SelectYear(ChangeEventArgs e)
+    {
+        year = Convert.ToInt32(e.Value.ToString());
+        // Render Calendar
+        UpdateCalendar();
+        Console.WriteLine($"Year: {year}");
+    }
+
+    void UpdateCalendar()
+    {
+        days = new List<CalendarDay>();
+
+        // Calculate the number of empty days
+        var firstDayDate = new DateTime(year, month, 1);
+        int weekDayNumber = (int)firstDayDate.DayOfWeek;
+        int numberOfEmptyDays = 0;
+        if (weekDayNumber == 7) // Sunday
+        {
+            numberOfEmptyDays = 0;
+        }
+        else
+        {
+            numberOfEmptyDays = weekDayNumber;
+        }
+
+        // Add the empty days
+        for (int i = 0; i < numberOfEmptyDays; i++)
+        {
+            days.Add(new CalendarDay
+            {
+                DayNumber = 0,
+                IsEmpty = true
+            });
+        }
+
+        // Add the month days
+        int numberOfDaysInMonth = DateTime.DaysInMonth(year, month);
+
+        for (int i = 0; i < numberOfDaysInMonth; i++)
+        {
+            days.Add(new CalendarDay
+            {
+                DayNumber = i + 1,
+                IsEmpty = false,
+                Date = new DateTime(year, month, i + 1),
+                Reservations = new List<Reservation>()
+            });
+        }
+
+        // 2- Calcualte the number of rows
+        int remaning = days.Count % 7;
+        if (remaning == 0)
+            rowsCount = days.Count / 7;
+        else
+            rowsCount = Convert.ToInt32(days.Count / 7) + 1;
+
+        Console.WriteLine($"Total Rows: {rowsCount} | Number of Empty Days {numberOfEmptyDays} | Month Days {numberOfDaysInMonth}");
+
+        if(Reservations != null)
+            AddReservationsToMonth();
+    }
+}

@@ -1,15 +1,106 @@
 ﻿@page "/reservations"
+@inject IReservationService reservationService;
+@inject IArenasService arenasService;
 @using Models
 @using Services
+@using Components
 
 <h2>Reservas</h2>
 
 <div class="row">
     <div class="col-sm-12">
-        <ReservationsTable />
+        <h5>Aguardando aprovação:</h5>
+        @if (reservations == null)
+        {
+            <p><em>Loading...</em></p>
+        }
+        else
+        {
+            <div class="overflow-auto h-100">
+                @foreach (var reservation in reservations)
+                {
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="row no-gutters">
+                                <div class="col-8">
+                                    <h5 class="card-title">Marcos Souza</h5>
+                                    <p class="text-muted mb-0">
+                                        @GetArenaNameFromId(reservation)
+                                    </p>
+                                    <p class="card-text">
+                                        <i class="fa fa-fw fa-calendar-alt"></i>
+                                        @reservation.StartTime.ToShortDateString() -
+                                        <i class="fa fa-fw fa-clock"></i>
+                                        @reservation.StartTime.ToShortTimeString()
+                                    </p>
+                                </div>
+                                <div class="col-4 align-self-center">
+                                    <button type="submit" class="btn btn-success m-1" @onclick="(async () => await ChangeReservationStatus(reservation, ReservationStatus.Approved))">Aprovar</button>
+                                    <button type="submit" class="btn btn-danger m-1" @onclick="(async () => await ChangeReservationStatus(reservation, ReservationStatus.Denied))">Rejeitar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        <Calendar Reservations="reservationsFromPlace">
+            <DayTemplate Context="day">
+                @{
+                    string currentDayClass = day.Date == DateTime.Now.Date ? "text-primary" : "";
+                    string selectedDayClass = day == selectedDay ? "border border-secondary rounded" : "border border-white rounded";
+                }
+                @if (!day.IsEmpty)
+                {
+                    <div class="" @onclick="() => selectedDay = day">
+                        <h5 class="@currentDayClass @selectedDayClass mt-2">@day.DayNumber</h5>
+                    </div>
+                }
+            </DayTemplate>
+        </Calendar>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        <ReservationList SelectedDay="selectedDay" />
     </div>
 </div>
 
 @code {
+    Reservation[] reservations;
 
+    Reservation[] reservationsFromPlace;
+
+    private CalendarDay selectedDay = new CalendarDay
+    {
+        Date = DateTime.Now,
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        reservations = await reservationService.GetReservationsByStatus((int)ReservationStatus.WaitingApprovement);
+        reservationsFromPlace = await reservationService.GetReservationsFromPlace(4);
+    }
+
+    private async Task ChangeReservationStatus(Reservation reservation, ReservationStatus status)
+    {
+        reservation.Status = status;
+        await EditReservation(reservation);
+    }
+
+    private async Task EditReservation(Reservation reservation)
+    {
+        await reservationService.EditReservation(reservation)
+            .ContinueWith(async (atecendent) => reservations = await reservationService.GetReservationsByStatus((int)ReservationStatus.WaitingApprovement));
+    }
+
+    private string GetArenaNameFromId(Reservation reservation)
+    {
+        var arena = reservation.Place.Arenas.Single(a => a.Id == reservation.ArenaId);
+        return arena.Name;
+    }
 }

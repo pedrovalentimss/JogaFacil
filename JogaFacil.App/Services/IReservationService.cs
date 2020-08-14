@@ -10,10 +10,12 @@ namespace JogaFacil.App.Services
     {
         void AddReservation(Reservation reservation);
 
-        void EditReservation(Reservation reservation);
+        Task EditReservation(Reservation reservation);
 
         Task<Reservation[]> GetAllReservations();
 
         Task<Reservation[]> GetReservationsByStatus(int status);
+
+        Task<Reservation[]> GetReservationsFromPlace(int status);
     }
 }
