@@ -13,6 +13,11 @@ using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using JogaFacil.Api.Data;
 using JogaFacil.Api.Services;
+using JogaFacil.Api.Auth;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace JogaFacil.Api
 {
@@ -32,6 +37,26 @@ namespace JogaFacil.Api
 
             services.AddDbContext<Context>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("Context")));
+
+            services.AddDbContext<AuthContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("Context")));
+
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<AuthContext>()
+                .AddDefaultTokenProviders();
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+              .AddJwtBearer(options =>
+           options.TokenValidationParameters = new TokenValidationParameters
+           {
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(Configuration["Jwt:Key"])),
+                ClockSkew = TimeSpan.Zero
+           });
 
             services.AddCors(c =>
             {
@@ -59,7 +84,7 @@ namespace JogaFacil.Api
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseCors("AllowAll");

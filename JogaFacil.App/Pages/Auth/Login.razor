@@ -1,0 +1,41 @@
+﻿@using Models
+@using JogaFacil.App.Auth
+@inject HttpClient httpClient
+@inject ILoginService loginService
+@inject NavigationManager navManager
+@page "/login"
+
+<h3>Log In</h3>
+
+<EditForm Model="user" OnValidSubmit="LoginUser">
+    <DataAnnotationsValidator />
+
+    <div class="form-group">
+        <label>Email:</label>
+        <div>
+            <InputText class="form-control" @bind-Value="user.Email" />
+            <ValidationMessage For="(() => user.Email)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Senha:</label>
+        <div>
+            <InputPassword class="form-control" @bind-Value="user.Password" />
+            <ValidationMessage For="(() => user.Password)" />
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Log in</button>
+
+</EditForm>
+
+@code {
+    private User user = new User();
+
+    async Task LoginUser()
+    {
+        var result = await httpClient.PostJsonAsync<UserToken>("https://localhost:44360/api/accounts/login", user);
+        await loginService.Login(result.Token);
+        navManager.NavigateTo("");
+    }
+}
