@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using JogaFacil.Api.Entities;
 using JogaFacil.Api.Models;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +16,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace JogaFacil.Api.Controllers
 {
+    [EnableCors("AllowAll")]
     [Route("api/[controller]")]
     [ApiController]
     public class AccountsController : ControllerBase

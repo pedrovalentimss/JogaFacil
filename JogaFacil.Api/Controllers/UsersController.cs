@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using JogaFacil.Api.Data;
 using JogaFacil.Api.Entities;
+using Microsoft.AspNetCore.Cors;
 
 namespace JogaFacil.Api.Controllers
 {
+    [EnableCors("AllowAll")]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase

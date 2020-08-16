@@ -84,10 +84,9 @@ namespace JogaFacil.Api
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            app.UseCors("AllowAll");
             app.UseAuthentication();
             app.UseAuthorization();
-
-            app.UseCors("AllowAll");
 
             app.UseEndpoints(endpoints =>
             {

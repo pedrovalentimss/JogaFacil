@@ -10,9 +10,11 @@ using JogaFacil.Api.Entities;
 using JogaFacil.Api.Services;
 using Microsoft.Extensions.Options;
 using System.Net.Http;
+using Microsoft.AspNetCore.Cors;
 
 namespace JogaFacil.Api.Controllers
 {
+    [EnableCors("AllowAll")]
     [Route("api/[controller]")]
     [ApiController]
     public class PlacesController : ControllerBase
