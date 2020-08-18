@@ -23,35 +23,58 @@ namespace JogaFacil.Api.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly RoleManager<IdentityRole<int>> _roleManager;
         private readonly IConfiguration _configuration;
 
         public AccountsController(
             UserManager<User> userManager,
             SignInManager<User> signInManager,
+            RoleManager<IdentityRole<int>> roleManager,
             IConfiguration configuration)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
             _configuration = configuration;
         }
 
-        [HttpPost("Create")]
+        [HttpPost("create")]
         public async Task<ActionResult<UserToken>> CreateUser([FromBody] UserInfo model)
         {
             var user = new User { Name = model.Name, UserName = model.Email, Email = model.Email };
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
+                await CreateUserRoles(user);
                 return BuildToken(user);
             }
             else
             {
                 return BadRequest("Username or password invalid");
             }
-
         }
 
-        [HttpPost("Login")]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutUser(int id, User user)
+        {
+            if (id != user.Id)
+            {
+                return BadRequest();
+            }
+
+            try
+            {
+                await _userManager.UpdateAsync(user);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+            return NoContent();
+        }
+
+        [HttpPost("login")]
         public async Task<ActionResult<UserToken>> Login([FromBody] UserInfo userInfo)
         {
             var result = await _signInManager.PasswordSignInAsync(userInfo.Email,
@@ -98,5 +121,18 @@ namespace JogaFacil.Api.Controllers
                 Expiration = expiration
             };
         }
+
+        private async Task CreateUserRoles(User user)
+        {
+            var userRole = user.UserType.ToString();
+            //Adding Admin Role
+            var roleCheck = await _roleManager.RoleExistsAsync(userRole);
+            if (!roleCheck)
+                await _roleManager.CreateAsync(new IdentityRole<int>(userRole));
+
+            await _userManager.AddToRoleAsync(user, userRole);
+        }
+
+
     }
 }
