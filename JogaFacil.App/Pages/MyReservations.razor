@@ -1,0 +1,41 @@
+﻿@using Services
+@using Models
+@inject IReservationService reservationService
+
+<h3>Minhas reservas</h3>
+
+@if (reservations == null)
+{
+    <p><em>Você ainda não possui nenhuma reserva</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-sm-12">
+            @foreach (var reservation in reservations)
+            {
+                <ReservationCard Reservation="reservation" />
+            }
+        </div>
+    </div>
+}
+
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationState { get; set; }
+
+    [Parameter]
+    public int UserId { get; set; }
+
+    Reservation[] reservations;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await authenticationState;
+        var user = authState.User;
+        if (user.Identity.IsAuthenticated)
+        {
+            reservations = await reservationService.GetReservationsFromUser(4);
+        }
+    }
+}

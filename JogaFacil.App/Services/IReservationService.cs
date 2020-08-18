@@ -16,6 +16,8 @@ namespace JogaFacil.App.Services
 
         Task<Reservation[]> GetReservationsByStatus(int status);
 
-        Task<Reservation[]> GetReservationsFromPlace(int status);
+        Task<Reservation[]> GetReservationsFromPlace(int placeId);
+
+        Task<Reservation[]> GetReservationsFromUser(int userId);
     }
 }

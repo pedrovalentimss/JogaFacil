@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using JogaFacil.Api.Entities;
 
 namespace JogaFacil.Api
 {
@@ -41,7 +42,7 @@ namespace JogaFacil.Api
             services.AddDbContext<AuthContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("Context")));
 
-            services.AddIdentity<IdentityUser, IdentityRole>()
+            services.AddIdentity<User, IdentityRole<int>>()
                 .AddEntityFrameworkStores<AuthContext>()
                 .AddDefaultTokenProviders();
 

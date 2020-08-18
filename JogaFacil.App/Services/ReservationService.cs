@@ -71,5 +71,18 @@ namespace JogaFacil.App.Services
             var route = builder.ToString();
             return await _http.GetJsonAsync<Reservation[]>(route);
         }
+
+        public async Task<Reservation[]> GetReservationsFromUser(int userId)
+        {
+            var builder = new UriBuilder(API_URL);
+            builder.Path = "api/reservations";
+
+            var query = HttpUtility.ParseQueryString(builder.Query);
+            query.Add("userId", userId.ToString());
+
+            builder.Query = query.ToString();
+            var route = builder.ToString();
+            return await _http.GetJsonAsync<Reservation[]>(route);
+        }
     }
 }

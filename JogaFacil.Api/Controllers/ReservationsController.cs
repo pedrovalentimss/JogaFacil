@@ -26,7 +26,7 @@ namespace JogaFacil.Api.Controllers
 
         // GET: api/Reservations
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Reservation>>> GetReservations(int placeId = 0, int status = 0)
+        public async Task<ActionResult<IEnumerable<Reservation>>> GetReservations(int placeId = 0, int status = 0, int userId = 0)
         {
             if (placeId != 0 && status == 0)
                 return GetReservationsFromPlace(placeId).Result;
@@ -36,6 +36,9 @@ namespace JogaFacil.Api.Controllers
 
             if (placeId != 0 && status != 0)
                 return GetReservationsFromPlaceByStatus(status, placeId).Result;
+
+            if (userId != 0)
+                return GetReservationsFromUser(userId).Result;
 
             return await _context.Reservations
                 .Include(r => r.Place)
@@ -74,7 +77,17 @@ namespace JogaFacil.Api.Controllers
             .Where(r => r.Status == (ReservationStatus)status)
             .ToListAsync();
         }
-        
+
+        public async Task<ActionResult<IEnumerable<Reservation>>> GetReservationsFromUser(int userId)
+        {
+            return await _context.Reservations
+            .Include(r => r.Place)
+            .Include(r => r.Place.Arenas)
+            .Include(r => r.User)
+            .Where(r => r.User.Id == userId)
+            .ToListAsync();
+        }
+
         // GET: api/Reservations/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Reservation>> GetReservation(int id)

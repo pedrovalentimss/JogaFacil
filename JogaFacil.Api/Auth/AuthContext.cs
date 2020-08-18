@@ -5,10 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using JogaFacil.Api.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace JogaFacil.Api.Auth
 {
-    public class AuthContext : IdentityDbContext
+    public class AuthContext : IdentityDbContext<User, IdentityRole<int>, int>
     {
         public AuthContext() : base()
         {

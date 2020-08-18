@@ -21,13 +21,13 @@ namespace JogaFacil.Api.Controllers
     [ApiController]
     public class AccountsController : ControllerBase
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
         private readonly IConfiguration _configuration;
 
         public AccountsController(
-            UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager,
+            UserManager<User> userManager,
+            SignInManager<User> signInManager,
             IConfiguration configuration)
         {
             _userManager = userManager;
@@ -36,13 +36,13 @@ namespace JogaFacil.Api.Controllers
         }
 
         [HttpPost("Create")]
-        public async Task<ActionResult<UserToken>> CreateUser([FromBody] User model)
+        public async Task<ActionResult<UserToken>> CreateUser([FromBody] UserInfo model)
         {
-            var user = new IdentityUser { UserName = model.Email, Email = model.Email };
+            var user = new User { Name = model.Name, UserName = model.Email, Email = model.Email };
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
-                return BuildToken(model);
+                return BuildToken(user);
             }
             else
             {
@@ -52,13 +52,14 @@ namespace JogaFacil.Api.Controllers
         }
 
         [HttpPost("Login")]
-        public async Task<ActionResult<UserToken>> Login([FromBody] User userInfo)
+        public async Task<ActionResult<UserToken>> Login([FromBody] UserInfo userInfo)
         {
             var result = await _signInManager.PasswordSignInAsync(userInfo.Email,
                 userInfo.Password, isPersistent: false, lockoutOnFailure: false);
             if (result.Succeeded)
             {
-                return BuildToken(userInfo);
+                var user = _userManager.FindByEmailAsync(userInfo.Email);
+                return BuildToken(user.Result);
             }
             else
             {
@@ -71,8 +72,9 @@ namespace JogaFacil.Api.Controllers
         {
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.UniqueName, userInfo.Email),
-                new Claim(ClaimTypes.Name, userInfo.Email),
+                new Claim(JwtRegisteredClaimNames.UniqueName, userInfo.UserName),
+                new Claim(ClaimTypes.Name, userInfo.Name),
+                new Claim(ClaimTypes.Email, userInfo.Email),
                 new Claim(ClaimTypes.Role, userInfo.UserType.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
