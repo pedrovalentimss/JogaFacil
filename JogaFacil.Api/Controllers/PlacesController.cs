@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using JogaFacil.Api.Data;
 using JogaFacil.Api.Entities;
 using JogaFacil.Api.Services;
 using Microsoft.Extensions.Options;
 using System.Net.Http;
 using Microsoft.AspNetCore.Cors;
+using JogaFacil.Api.Auth;
 
 namespace JogaFacil.Api.Controllers
 {
@@ -19,11 +19,11 @@ namespace JogaFacil.Api.Controllers
     [ApiController]
     public class PlacesController : ControllerBase
     {
-        private readonly Context _context;
+        private readonly AuthContext _context;
         private readonly IGeocodingService _geocodingService;
         private readonly IFoursquareService _foursquareService;
 
-        public PlacesController(Context context,
+        public PlacesController(AuthContext context,
             IGeocodingService geocodingService,
             IFoursquareService foursquareService)
         {
@@ -81,6 +81,24 @@ namespace JogaFacil.Api.Controllers
             return place;
         }
 
+        [HttpGet("owner/{ownerId}")]
+        public async Task<ActionResult<Place>> GetPlaceFromOwner(int ownerId)
+        {
+            var place = await _context.Places
+                .Include(p => p.Address)
+                .Include(p => p.OpenHours)
+                .Include(p => p.Arenas)
+                .Include(p => p.Admins)
+                .SingleAsync(p => p.Owner.Id == ownerId);
+
+            if (place == null)
+            {
+                return NotFound();
+            }
+
+            return place;
+        }
+
         public async Task<IEnumerable<Place>> GetPlacesFromService(string city)
         
         {
@@ -109,6 +127,7 @@ namespace JogaFacil.Api.Controllers
             }
 
             _context.Entry(place).State = EntityState.Modified;
+            //_context.Update(place);
 
             try
             {
@@ -138,6 +157,8 @@ namespace JogaFacil.Api.Controllers
             //    place.Address.Latitude = coordinates.Latitude.ToString();
             //    place.Address.Longitude = coordinates.Longitude.ToString();
             //}
+
+            _context.Users.Attach(place.Owner);
 
             _context.Places.Add(place);
             await _context.SaveChangesAsync();

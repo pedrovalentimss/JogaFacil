@@ -2,7 +2,10 @@
 @inject IPlacesService placesService
 @inject IReservationService reservationService
 @inject IArenasService arenasService
+@inject IUsersService usersService
 @inject IJSRuntime JSRuntime;
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@using Microsoft.AspNetCore.Components.Authorization
 @using Models
 @using Services
 
@@ -71,7 +74,7 @@ else
                                 <div class="d-flex flex-column flex-grow-1 justify-content-end">
                                     <div class="alert alert-success collapse" id="alertSuccess" role="alert">
                                         Reserva solicitada com sucesso!
-                                        <br/>
+                                        <br />
                                         <a href="reservations" class="alert-link">Acompanhe suas reservas aqui</a>.
                                     </div>
                                     <div class="align-self-end">
@@ -85,10 +88,32 @@ else
                 </EditForm>
             </div>
         </div>
-        <div class="fixed-bottom p-3 bg-white">
-            <button type="button" class="btn btn-primary btn-block btn-lg" data-toggle="modal" data-target="#modalForm">
-                Reservar
-            </button>
+        <div class="col-sm-12">
+            <h5>Reservas</h5>
+            <div class="form-group">
+                <label>Selecione a data que deseja visualizar: </label>
+                <input type="date" class="form-control" min="@DateTime.Now" @onchange="SelectDate" />
+            </div>
+            <div class="overflow-auto">
+                @foreach (var reservation in reservationsFromDay)
+                {
+                    <ReservationCard Reservation=@reservation />
+                }
+            </div>
+        </div>
+        <div class="fixed-bottom px-4 pt-2 pb-2 bg-white">
+            <AuthorizeView Roles="User">
+                <Authorized>
+                    <button type="button" class="btn btn-primary btn-block btn-lg" data-toggle="modal" data-target="#modalForm">
+                        Reservar
+                    </button>
+                </Authorized>
+                <NotAuthorized>
+                    <div class="alert alert-info" role="alert">
+                        Para fazer a reserva do local, <a href="register" class="alert-link">cadastre-se</a> ou <a href="login" class="alert-link">faça login</a> em sua conta.
+                    </div>
+                </NotAuthorized>
+            </AuthorizeView>
         </div>
     </div>
 }
@@ -97,15 +122,28 @@ else
     [Parameter]
     public int Id { get; set; }
 
+    public string UserId { get; set; }
+
     public ReservationFormModel reservationFormModel { get; set; }
 
     public Place place { get; set; }
+
+    public User User { get; set; }
+
+    public Reservation[] reservations { get; set; }
+
+    public Reservation[] reservationsFromDay { get; set; }
+
+    public DateTime DateSelected = DateTime.Today;
 
     protected override async Task OnInitializedAsync()
     {
         reservationFormModel = new ReservationFormModel();
         reservationFormModel.Date = DateTime.Now;
         place = await placesService.GetPlace(Id);
+        User = await GetUser();
+        reservations = await GetReservations();
+        reservationsFromDay = reservations.Where(r => r.StartTime.Date == DateSelected).ToArray();
     }
 
     async Task SaveReservation()
@@ -115,6 +153,7 @@ else
         reservation.StartTime = reservationFormModel.Date.Add(reservationFormModel.Time.TimeOfDay);
         reservation.EndTime = reservation.StartTime.AddHours(1);
         reservation.Place = place;
+        reservation.User = User;
         reservation.ArenaId = Convert.ToInt32(reservationFormModel.ArenaId);
         reservation.Status = ReservationStatus.WaitingApprovement;
         reservationService.AddReservation(reservation);
@@ -126,5 +165,36 @@ else
     async Task ShowAlert(string elementId, int timeToShow)
     {
         await JSRuntime.InvokeVoidAsync("showAlert", elementId, timeToShow);
+    }
+
+    private async Task<User> GetUser()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            UserId = user.FindFirst(c => c.Type == "Id").Value;
+            return await usersService.GetUser(UserId);
+        }
+
+        return null;
+    }
+
+    async Task<Reservation[]> GetReservations()
+    {
+        return await reservationService.GetReservationsFromPlace(place.Id);
+    }
+
+    void SelectDate(ChangeEventArgs e)
+    {
+        var date = e.Value.ToString();
+        DateSelected = DateTime.Parse(date);
+        UpdateReservations(DateSelected);
+    }
+
+    void UpdateReservations(DateTime date)
+    {
+        reservationsFromDay = reservations.Where(r => r.StartTime.Date == date).ToArray();
     }
 }

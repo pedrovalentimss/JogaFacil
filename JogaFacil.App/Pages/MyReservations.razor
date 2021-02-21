@@ -1,12 +1,14 @@
-﻿@using Services
+﻿@page "/reservas"
+@using Services
 @using Models
+@using Components
 @inject IReservationService reservationService
 
 <h3>Minhas reservas</h3>
 
 @if (reservations == null)
 {
-    <p><em>Você ainda não possui nenhuma reserva</em></p>
+    <p><em>Loading...</em></p>
 }
 else
 {
@@ -14,7 +16,7 @@ else
         <div class="col-sm-12">
             @foreach (var reservation in reservations)
             {
-                <ReservationCard Reservation="reservation" />
+                <ReservationAdminCard Reservation="reservation" />
             }
         </div>
     </div>
@@ -33,9 +35,10 @@ else
     {
         var authState = await authenticationState;
         var user = authState.User;
+        var userId = authState.User.Claims.Single(c => c.Type.Equals("Id"));
         if (user.Identity.IsAuthenticated)
         {
-            reservations = await reservationService.GetReservationsFromUser(4);
+            reservations = await reservationService.GetReservationsFromUser(userId.Value);
         }
     }
 }

@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using JogaFacil.Api.Data;
 using JogaFacil.Api.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
+using JogaFacil.Api.Auth;
 
 namespace JogaFacil.Api.Controllers
 {
@@ -17,9 +17,9 @@ namespace JogaFacil.Api.Controllers
     [ApiController]
     public class ReservationsController : ControllerBase
     {
-        private readonly Context _context;
+        private readonly AuthContext _context;
 
-        public ReservationsController(Context context)
+        public ReservationsController(AuthContext context)
         {
             _context = context;
         }
@@ -119,7 +119,7 @@ namespace JogaFacil.Api.Controllers
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception ex)
             {
                 if (!ReservationExists(id))
                 {
@@ -140,6 +140,7 @@ namespace JogaFacil.Api.Controllers
             try
             {
                 _context.Places.Attach(reservation.Place);
+                _context.Users.Attach(reservation.User);
                 _context.Reservations.Add(reservation);
                 await _context.SaveChangesAsync();
             }

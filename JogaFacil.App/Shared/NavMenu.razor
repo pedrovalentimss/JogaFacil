@@ -9,20 +9,27 @@
     <ul class="nav flex-column">
         <AuthorizeView Roles="User">
             <Authorized>
-                <NavItemsUser/>
+                <NavItemsUser />
             </Authorized>
+        </AuthorizeView>
+
+        <AuthorizeView Roles="Owner">
+            <Authorized>
+                <NavItemsOwner />
+            </Authorized>
+        </AuthorizeView>
+
+        <AuthorizeView>
             <NotAuthorized>
                 <li class="nav-item px-3">
                     <NavLink class="nav-link" href="places" Match="NavLinkMatch.All">
                         <span class="oi oi-home" aria-hidden="true"></span> Quadras
                     </NavLink>
+                    <NavLink class="nav-link" href="register/owner" Match="NavLinkMatch.All">
+                        <span class="oi oi-briefcase" aria-hidden="true"></span> Área do adminstrador
+                    </NavLink>
                 </li>
             </NotAuthorized>
-        </AuthorizeView>
-        <AuthorizeView Roles="Owner">
-            <Authorized>
-                <NavItemsOwner/>
-            </Authorized>
         </AuthorizeView>
     </ul>
 </div>

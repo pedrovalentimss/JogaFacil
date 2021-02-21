@@ -11,7 +11,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
-using JogaFacil.Api.Data;
 using JogaFacil.Api.Services;
 using JogaFacil.Api.Auth;
 using Microsoft.AspNetCore.Identity;
@@ -35,9 +34,6 @@ namespace JogaFacil.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-
-            services.AddDbContext<Context>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("Context")));
 
             services.AddDbContext<AuthContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("Context")));

@@ -142,7 +142,8 @@ app {
     }
 
     .main .top-row.auth {
-        justify-content: space-between;
+        position: fixed;
+        bottom: 0;
     }
 
     .main .top-row a, .main .top-row .btn-link {

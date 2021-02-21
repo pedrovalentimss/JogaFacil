@@ -19,5 +19,11 @@ namespace JogaFacil.Api.Auth
             : base(options)
         {
         }
+
+        public DbSet<Reservation> Reservations { get; set; }
+
+        public DbSet<Place> Places { get; set; }
+
+        public DbSet<Arena> Arenas { get; set; }
     }
 }

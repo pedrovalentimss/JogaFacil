@@ -1,0 +1,33 @@
+﻿@page "/authtest"
+@inject IPlacesService placesService;
+@inject IJSRuntime JSRuntime
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@using Microsoft.AspNetCore.Components.Authorization
+@using Models
+@using Services
+
+<h3>ClaimsPrincipal Data</h3>
+
+<button @onclick="GetClaimsPrincipalData">Get ClaimsPrincipal Data</button>
+
+<p>@userId</p>
+
+@code {
+    private string userId;
+
+    private async Task GetClaimsPrincipalData()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+
+            userId = user.FindFirst(c => c.Type == "Id").Value;
+        }
+        else
+        {
+            userId = "The user is NOT authenticated.";
+        }
+    }
+}

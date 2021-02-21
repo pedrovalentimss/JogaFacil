@@ -1,0 +1,82 @@
+﻿@page "/places/owner"
+@inject IPlacesService placesService
+@inject IReservationService reservationService
+@inject IArenasService arenasService
+@inject IUsersService usersService
+@inject IJSRuntime JSRuntime;
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@using Microsoft.AspNetCore.Components.Authorization
+@using Models
+@using Services
+
+@if (place == null)
+{
+    <button type="button" class="btn btn-primary" href="places/register" data-dismiss="modal">Cadastre sua quadra</button>
+}
+else
+{
+    <div class="row">
+        <h3>Meu local</h3>
+        <div class="col-sm-12 mb-4">
+            <h4>@place.Name</h4>
+            <p>
+                <i class="fa fa-fw fa-map-marker-alt"></i>
+                @place.Address.Street, @place.Address.Number - @place.Address.City
+            </p>
+            <p>
+                <i class="fa fa-fw fa-phone-alt"></i>
+                @place.Phone
+            </p>
+            <button type="button" class="btn btn-primary" href="@($"places/edit/{place.Id}")">Editar local</button>
+        </div>
+        <div class="col-sm-12">
+            <h4>Quadras</h4>
+            @if (place.Arenas.Count > 0)
+            {
+                <div class="row row-cols-sm-2">
+                    @foreach (var arena in place.Arenas)
+                    {
+                    <ArenaCard Arena=@arena />
+                    }
+                </div>
+            }
+            else
+            {
+                <p>Você ainda não tem nenhuma quadra adicionada</p>
+                <button type="button" class="btn btn-success" href="arenas/add">Adicionar quadra</button>
+            }
+
+        </div>
+    </div>
+}
+
+@code {
+    public int OwnerId { get; set; }
+
+    public string UserId { get; set; }
+
+    public Place place { get; set; }
+
+    public User User { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        User = await GetUser();
+        OwnerId = User.Id;
+        place = await placesService.GetPlaceFromOwner(OwnerId);
+    }
+
+    private async Task<User> GetUser()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            UserId = user.FindFirst(c => c.Type == "Id").Value;
+            return await usersService.GetUser(UserId);
+        }
+
+        return null;
+    }
+}

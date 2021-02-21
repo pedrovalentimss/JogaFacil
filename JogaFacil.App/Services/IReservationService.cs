@@ -18,6 +18,6 @@ namespace JogaFacil.App.Services
 
         Task<Reservation[]> GetReservationsFromPlace(int placeId);
 
-        Task<Reservation[]> GetReservationsFromUser(int userId);
+        Task<Reservation[]> GetReservationsFromUser(string userId);
     }
 }

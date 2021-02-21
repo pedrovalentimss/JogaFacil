@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using JogaFacil.Api.Data;
 using JogaFacil.Api.Entities;
 using Microsoft.AspNetCore.Cors;
+using JogaFacil.Api.Auth;
 
 namespace JogaFacil.Api.Controllers
 {
@@ -16,9 +16,9 @@ namespace JogaFacil.Api.Controllers
     [ApiController]
     public class ArenasController : ControllerBase
     {
-        private readonly Context _context;
+        private readonly AuthContext _context;
 
-        public ArenasController(Context context)
+        public ArenasController(AuthContext context)
         {
             _context = context;
         }

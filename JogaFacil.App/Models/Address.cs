@@ -7,6 +7,19 @@ namespace JogaFacil.App.Models
 {
     public class Address
     {
+        public Address(string street, string number, string neighbourhood, string postalCode, string city, string state)
+        {
+            Street = street;
+            Number = number;
+            Neighbourhood = neighbourhood;
+            PostalCode = postalCode;
+            City = city;
+            State = state;
+            Country = "BR";
+        }
+
+        public Address() { }
+
         public int Id { get; set; }
 
         public string Street { get; set; }

@@ -1,0 +1,93 @@
+﻿@page "/places/edit/{Id:int}"
+@inject IPlacesService placesService
+@using Models
+@using Services
+
+<h3>Editar local</h3>
+
+<EditForm Model="@placeFormModel" OnValidSubmit="EditPlace">
+    <DataAnnotationsValidator />
+
+    <div class="form-group">
+        <label>Nome do local:</label>
+        <div>
+            <InputText class="form-control" @bind-Value="placeFormModel.Name" />
+            <ValidationMessage For="(() => placeFormModel.Name)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Telefone:</label>
+        <div>
+            <InputText class="form-control" @bind-Value="placeFormModel.Phone" />
+            <ValidationMessage For="(() => placeFormModel.Phone)" />
+        </div>
+    </div>
+    <div class="form-row">
+        <label>Número:</label>
+        <div>
+            <InputText class="form-control" @bind-Value="placeFormModel.Number" />
+            <ValidationMessage For="(() => placeFormModel.Number)" />
+        </div>
+        <label>Rua:</label>
+        <div>
+            <InputText class="form-control" @bind-Value="placeFormModel.Street" />
+            <ValidationMessage For="(() => placeFormModel.Street)" />
+        </div>
+        <label>Bairro:</label>
+        <div>
+            <InputText class="form-control" @bind-Value="placeFormModel.Neighbourhood" />
+            <ValidationMessage For="(() => placeFormModel.Neighbourhood)" />
+        </div>
+        <label>Cidade:</label>
+        <div>
+            <InputText class="form-control" @bind-Value="placeFormModel.City" />
+            <ValidationMessage For="(() => placeFormModel.City)" />
+        </div>
+        <label>Estado:</label>
+        <div>
+            <InputText class="form-control" @bind-Value="placeFormModel.State" />
+            <ValidationMessage For="(() => placeFormModel.State)" />
+        </div>
+        <label>CEP:</label>
+        <div>
+            <InputText class="form-control" @bind-Value="placeFormModel.PostalCode" />
+            <ValidationMessage For="(() => placeFormModel.PostalCode)" />
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Editar informações</button>
+
+</EditForm>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    public Place place { get; set; }
+
+    public PlaceFormModel placeFormModel { get; set; } = new PlaceFormModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        place = await placesService.GetPlace(Id);
+        placeFormModel = new PlaceFormModel(place);
+    }
+
+    async Task EditPlace()
+    {
+        var address = new Address(
+            placeFormModel.Street,
+            placeFormModel.Number,
+            placeFormModel.Neighbourhood,
+            placeFormModel.PostalCode,
+            placeFormModel.City,
+            placeFormModel.State
+        );
+
+        place.Address = address;
+        place.Name = placeFormModel.Name;
+        place.Phone = placeFormModel.Phone;
+
+        await placesService.EditPlace(place);
+    }
+}

@@ -72,13 +72,13 @@ namespace JogaFacil.App.Services
             return await _http.GetJsonAsync<Reservation[]>(route);
         }
 
-        public async Task<Reservation[]> GetReservationsFromUser(int userId)
+        public async Task<Reservation[]> GetReservationsFromUser(string userId)
         {
             var builder = new UriBuilder(API_URL);
             builder.Path = "api/reservations";
 
             var query = HttpUtility.ParseQueryString(builder.Query);
-            query.Add("userId", userId.ToString());
+            query.Add("userId", userId);
 
             builder.Query = query.ToString();
             var route = builder.ToString();

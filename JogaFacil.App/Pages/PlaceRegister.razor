@@ -1,0 +1,112 @@
+﻿@page "/places/register"
+@using Models
+@using Services
+@using JogaFacil.App.Auth
+@using Microsoft.AspNetCore.WebUtilities
+@inject IPlacesService placesService
+@inject IUsersService usersService
+@inject HttpClient httpClient
+@inject NavigationManager navManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<h3>Cadastre seu local</h3>
+
+<EditForm Model="placeFormModel" OnValidSubmit="CreatePlace">
+    <DataAnnotationsValidator />
+
+    <div class="form-group">
+        <label>Nome do local:</label>
+        <div>
+            <InputText class="form-control" @bind-Value="placeFormModel.Name" />
+            <ValidationMessage For="(() => placeFormModel.Name)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Telefone:</label>
+        <div>
+            <InputText class="form-control" @bind-Value="placeFormModel.Phone" />
+            <ValidationMessage For="(() => placeFormModel.Phone)" />
+        </div>
+    </div>
+    <div class="form-row">
+        <label>Número:</label>
+        <div>
+            <InputText class="form-control" @bind-Value="placeFormModel.Number" />
+            <ValidationMessage For="(() => placeFormModel.Number)" />
+        </div>
+        <label>Rua:</label>
+        <div>
+            <InputText class="form-control" @bind-Value="placeFormModel.Street" />
+            <ValidationMessage For="(() => placeFormModel.Street)" />
+        </div>
+        <label>Bairro:</label>
+        <div>
+            <InputText class="form-control" @bind-Value="placeFormModel.Neighbourhood" />
+            <ValidationMessage For="(() => placeFormModel.Neighbourhood)" />
+        </div>
+        <label>Cidade:</label>
+        <div>
+            <InputText class="form-control" @bind-Value="placeFormModel.City" />
+            <ValidationMessage For="(() => placeFormModel.City)" />
+        </div>
+        <label>Estado:</label>
+        <div>
+            <InputText class="form-control" @bind-Value="placeFormModel.State" />
+            <ValidationMessage For="(() => placeFormModel.State)" />
+        </div>
+        <label>CEP:</label>
+        <div>
+            <InputText class="form-control" @bind-Value="placeFormModel.PostalCode" />
+            <ValidationMessage For="(() => placeFormModel.PostalCode)" />
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Cadastrar</button>
+
+</EditForm>
+
+@code {
+    public User Owner { get; set; }
+
+    public PlaceFormModel placeFormModel { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        placeFormModel = new PlaceFormModel();
+        Owner = await GetUser();
+    }
+
+    void CreatePlace()
+    {
+        var address = new Address(
+            placeFormModel.Street,
+            placeFormModel.Number,
+            placeFormModel.Neighbourhood,
+            placeFormModel.PostalCode,
+            placeFormModel.City,
+            placeFormModel.State
+        );
+
+        var place = new Place();
+        place.Address = address;
+        place.Name = placeFormModel.Name;
+        place.Phone = placeFormModel.Phone;
+        place.Owner = Owner;
+
+        placesService.CreatePlace(place);
+    }
+
+    private async Task<User> GetUser()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            var userId = user.FindFirst(c => c.Type == "Id").Value;
+            return await usersService.GetUser(userId);
+        }
+
+        return null;
+    }
+}

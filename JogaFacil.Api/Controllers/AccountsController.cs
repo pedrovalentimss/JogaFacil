@@ -41,7 +41,7 @@ namespace JogaFacil.Api.Controllers
         [HttpPost("create")]
         public async Task<ActionResult<UserToken>> CreateUser([FromBody] UserInfo model)
         {
-            var user = new User { Name = model.Name, UserName = model.Email, Email = model.Email };
+            var user = new User { Name = model.Name, UserName = model.Email, Email = model.Email, UserType = (Entities.UserType)model.UserType};
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
@@ -52,6 +52,13 @@ namespace JogaFacil.Api.Controllers
             {
                 return BadRequest("Username or password invalid");
             }
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<User>> GetUser(int id)
+        {
+            var result = await _userManager.FindByIdAsync(id.ToString());
+            return result;
         }
 
         [HttpPut("{id}")]
@@ -96,6 +103,7 @@ namespace JogaFacil.Api.Controllers
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.UniqueName, userInfo.UserName),
+                new Claim("Id", userInfo.Id.ToString()),
                 new Claim(ClaimTypes.Name, userInfo.Name),
                 new Claim(ClaimTypes.Email, userInfo.Email),
                 new Claim(ClaimTypes.Role, userInfo.UserType.ToString()),
