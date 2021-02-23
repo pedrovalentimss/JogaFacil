@@ -15,8 +15,8 @@
 }
 else
 {
+    <h3>Meu local</h3>
     <div class="row">
-        <h3>Meu local</h3>
         <div class="col-sm-12 mb-4">
             <h4>@place.Name</h4>
             <p>
@@ -36,7 +36,7 @@ else
                 <div class="row row-cols-sm-2">
                     @foreach (var arena in place.Arenas)
                     {
-                    <ArenaCard Arena=@arena />
+                        <ArenaCard Arena=@arena />
                     }
                 </div>
             }

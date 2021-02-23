@@ -46,11 +46,13 @@ namespace JogaFacil.Api.Controllers
 
                 var placesFromService = GetPlacesFromService(city);
 
-                placesFromService.Result.ToList().ForEach(async p => await PostPlace(p));
+                //placesFromService.Result.ToList().ForEach(async p => await PostPlace(p));
 
-                places = GetPlacesFromCity(city);
+                return placesFromService.Result.ToList();
 
-                return places.Result.ToList();
+                //places = GetPlacesFromCity(city);
+
+                //return places.Result.ToList();
             }
 
             return await _context.Places
