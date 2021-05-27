@@ -148,7 +148,7 @@ else
         place = await placesService.GetPlace(Id);
         User = await GetUser();
         reservations = await GetReservations();
-        reservationsFromDay = reservations.Where(r => r.StartTime.Date == DateSelected).ToArray();
+        reservationsFromDay = reservations.Where(r => r.StartTime.Date == DateSelected && r.Status == ReservationStatus.Approved).ToArray();
     }
 
     protected override void OnAfterRender(bool firstRender)

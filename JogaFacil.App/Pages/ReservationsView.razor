@@ -22,7 +22,7 @@
                         <div class="card-body">
                             <div class="row no-gutters">
                                 <div class="col-8">
-                                    <h5 class="card-title">Marcos Souza</h5>
+                                    <h5 class="card-title">@reservation.User.Name</h5>
                                     <p class="text-muted mb-0">
                                         @GetArenaNameFromId(reservation)
                                     </p>
@@ -43,29 +43,6 @@
                 }
             </div>
         }
-    </div>
-</div>
-<div class="row">
-    <div class="col-sm-12">
-        <Calendar Reservations="reservationsFromPlace">
-            <DayTemplate Context="day">
-                @{
-                    string currentDayClass = day.Date == DateTime.Now.Date ? "text-primary" : "";
-                    string selectedDayClass = day == selectedDay ? "border border-secondary rounded" : "border border-white rounded";
-                }
-                @if (!day.IsEmpty)
-                {
-                    <div class="" @onclick="() => selectedDay = day">
-                        <h5 class="@currentDayClass @selectedDayClass mt-2">@day.DayNumber</h5>
-                    </div>
-                }
-            </DayTemplate>
-        </Calendar>
-    </div>
-</div>
-<div class="row">
-    <div class="col-sm-12">
-        <ReservationList SelectedDay="selectedDay" />
     </div>
 </div>
 
