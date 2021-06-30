@@ -86,19 +86,29 @@ namespace JogaFacil.Api.Controllers
         [HttpGet("owner/{ownerId}")]
         public async Task<ActionResult<Place>> GetPlaceFromOwner(int ownerId)
         {
-            var place = await _context.Places
+
+            try{
+                var place = await _context.Places
                 .Include(p => p.Address)
                 .Include(p => p.OpenHours)
                 .Include(p => p.Arenas)
                 .Include(p => p.Admins)
-                .SingleAsync(p => p.Owner.Id == ownerId);
+                .FirstOrDefaultAsync(p => p.Owner.Id == ownerId);
 
-            if (place == null)
+                if (place == null)
+                {
+                    return NotFound();
+                }
+
+                return place;
+            }
+            catch (Exception ex)
             {
-                return NotFound();
+                throw;
             }
 
-            return place;
+
+
         }
 
         public async Task<IEnumerable<Place>> GetPlacesFromService(string city)
@@ -128,8 +138,11 @@ namespace JogaFacil.Api.Controllers
                 return BadRequest();
             }
 
+            foreach(var arena in place.Arenas.ToList())
+                _context.Arenas.Attach(arena);
+
             _context.Entry(place).State = EntityState.Modified;
-            //_context.Update(place);
+            _context.Update(place);
 
             try
             {

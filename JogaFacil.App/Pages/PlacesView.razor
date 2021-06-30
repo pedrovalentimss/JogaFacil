@@ -13,18 +13,61 @@
 else
 {
     <div class="row">
-        <div class="col-sm-12">
-            @foreach (var place in places)
-            {
-                <PlaceCard Place=@place />
-            }
+        <div class="col-4">
+            <label>Cidade:</label>
+            <select @bind="City" class="custom-select">
+                <option value="Gravataí">Gravataí</option>
+                <option value="Cachoeirinha">Cachoeirinha</option>
+                <option value="Porto Alegre">Porto Alegre</option>
+                <option value="Canoas">Canoas</option>
+            </select>
         </div>
-    </div>
+        <div class="col-4 mb-3">
+            <label>Esporte:</label>
+            <select class="custom-select">
+                <option value="Futsal">Futsal</option>
+                <option value="Futebol">Futebol</option>
+                <option value="Vôlei">Vôlei</option>
+                <option value="Basquete">Basquete</option>
+            </select>
+        </div>
+            <div class="col-sm-12">
+                @foreach (var place in places)
+                {
+                    <PlaceCard Place=@place />
+                }
+            </div>
+        </div>
 
 }
 
 @code {
     Place[] places;
+
+    private string city;
+
+
+    public string City
+    {
+        get { return city; }
+        set
+        {
+            city = value;
+            GetPlacesFromCity(City);
+            SomeMethod();
+        }
+    }
+
+    private void SomeMethod()
+    {
+        Console.WriteLine(City);
+    }
+
+
+    async Task GetPlacesFromCity(string city)
+    {
+        places = await placesService.GetPlacesFromCity(city);
+    }
 
     protected override async Task OnInitializedAsync()
     {

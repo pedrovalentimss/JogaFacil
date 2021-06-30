@@ -27,7 +27,7 @@ else
                 <i class="fa fa-fw fa-phone-alt"></i>
                 @place.Phone
             </p>
-            <button type="button" class="btn btn-primary" href="@($"places/edit/{place.Id}")">Editar local</button>
+            <a href="@($"places/edit/{place.Id}")" class="btn btn-primary" role="button">Editar local</a>
         </div>
         <div class="col-sm-12">
             <h4>Quadras</h4>
@@ -43,7 +43,7 @@ else
             else
             {
                 <p>Você ainda não tem nenhuma quadra adicionada</p>
-                <button type="button" class="btn btn-success" href="arenas/add">Adicionar quadra</button>
+                <a href="@($"arena/create/{place.Id}")" class="btn btn-success" role="button">Adicionar quadra</a>
             }
 
         </div>

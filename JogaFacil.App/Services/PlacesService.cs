@@ -41,6 +41,20 @@ namespace JogaFacil.App.Services
             return await _http.GetJsonAsync<Place>(route);
         }
 
+        public async Task<Place[]> GetPlacesFromCity(string city)
+        {
+            var builder = new UriBuilder(API_URL);
+            builder.Path = "api/places/";
+
+            var query = HttpUtility.ParseQueryString(builder.Query);
+            query.Add("city", city);
+
+            builder.Query = query.ToString();
+
+            var route = builder.ToString();
+            return await _http.GetJsonAsync<Place[]>(route);
+        }
+
         public void CreatePlace(Place place)
         {
             var builder = new UriBuilder(API_URL);
@@ -50,8 +64,11 @@ namespace JogaFacil.App.Services
             _http.PostJsonAsync(route, place);
         }
 
-        public async Task EditPlace(Place place)
+        public async Task EditPlace(Place place, Arena arena = null)
         {
+            if (arena != null)
+                place.Arenas.Add(arena);
+
             var builder = new UriBuilder(API_URL);
             builder.Path = "api/places/" + place.Id;
 

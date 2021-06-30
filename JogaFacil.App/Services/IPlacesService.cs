@@ -14,8 +14,10 @@ namespace JogaFacil.App.Services
 
         Task<Place> GetPlaceFromOwner(int ownerId);
 
+        Task<Place[]> GetPlacesFromCity(string city);
+
         void CreatePlace(Place place);
 
-        Task EditPlace(Place place);
+        Task EditPlace(Place place, Arena arena = null);
     }
 }
